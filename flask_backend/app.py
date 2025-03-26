@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, redirect, session
-from flask_pymongo import PyMongo
+from flask import Flask, render_template, request, redirect, session, jsonify
+from pymongo.mongo_client import MongoClient
 from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
 import os
@@ -8,23 +8,26 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
-
-app.config['MONGO_URI'] =  "mongodb://{user_name}:{pass_word}@{host{port}/{database}".format(
-        user_name='root',
-        pass_word='Sr20020715320',
-        host='192.168.1.1',
-        port=27017,
-        database='database_name'
-    )
-
-mongo = PyMongo(app)
+app.config['MONGO_URI'] = os.getenv('MONGO_URI')
+client = MongoClient(app.config['MONGO_URI'])
+database = client.get_database("ai_platform")
+login_db = database.get_collection("login")
 bcrypt = Bcrypt(app)
 
-if mongo.db is not None:
-    print("MongoDB connected successfully!")
-else:
-    print("MongoDB connection failed!")
-
+try:
+    database = client.get_database("ai_platform")
+    login_db = client.get_database("ai_platform").get_collection("login")
+    
+    # Check if the collection is empty
+    if login_db.count_documents({}) == 0:
+        # Insert initial data
+        login_db.insert_one({
+            'username': 'admin',
+            'password': bcrypt.generate_password_hash('admin123').decode('utf-8')
+        })
+        print("Initialized the login collection with default admin credentials.")
+except Exception as e:
+    raise Exception("Unable to find the document due to the following error: ", e)
 
 @app.route('/')
 def index():
@@ -36,13 +39,12 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        users = mongo.db.register
-        user_data = users.find_one({'username': username})
+        user_data = login_db.find_one({'username': username})
 
         if user_data and bcrypt.check_password_hash(user_data['password'], password):
             session['username'] = username
             
-            login_sessions = mongo.db.login_sessions
+            login_sessions = database.get_collection("login_sessions")
             login_sessions.insert_one({'username': username})
             
             return redirect('/secured')
@@ -58,7 +60,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
 
-        users = mongo.db.register
+        users = client.get_database("ai_platform").get_collection("login")
         existing_user = users.find_one({'username': username})
 
         if existing_user:
@@ -72,7 +74,7 @@ def register():
 @app.route('/secured')
 def secured():
     if 'username' in session:
-        users = mongo.db.register
+        users = login_db
         user_data = users.find_one({'username': session['username']})
 
         first_name = user_data.get('first_name', '')
@@ -85,7 +87,7 @@ def secured():
 @app.route('/logout')
 def logout():
     if 'username' in session:
-        login_sessions = mongo.db.login_sessions
+        login_sessions = database.get_collection("login_sessions")
         login_sessions.delete_one({'username': session['username']})
 
     session.pop('username', None)
@@ -93,5 +95,4 @@ def logout():
     return redirect('/login')
 
 if __name__ == '__main__':
-    print("MONGO_URI:", os.getenv('MONGO_URI'))
     app.run(debug=True, port=5000)
