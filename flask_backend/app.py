@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, jsonify,url_for
+from werkzeug.utils import secure_filename
 from pymongo.mongo_client import MongoClient
 from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
@@ -8,11 +9,16 @@ import openai
 from datetime import datetime
 from bson.objectid import ObjectId
 import json
+from bson.binary import Binary
+import PyPDF2
+import docx
+import io
 
 from config import *
 
 from src.github_log import github_blueprint
 from src.gpt import get_gpt_response
+from src.file_edit import allowed_file, extract_text_from_file
 
 load_dotenv()
 
@@ -162,27 +168,87 @@ def logout():
 
     return redirect('/login')
 
-
-# 修改聊天路由，添加聊天历史存储功能
+# 修改聊天路由，添加文件处理功能
 @app.route('/chat', methods=['POST'])
 def chat():
     if 'username' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
 
-    data = request.json
-    user_message = data.get('message', '')
-    chat_history = data.get('history', [])
-    chat_id = data.get('chat_id', None)
-
-    if not user_message:
-        return jsonify({'error': 'Message is required'}), 400
+    user_message = request.form.get('message', '')
+    chat_id = request.form.get('chat_id', None)
+    model = request.form.get('model', 'gpt-4')
+    
+    file_content = ""
+    file_metadata = None
+    
+    if 'file' in request.files:
+        file = request.files['file']
+        if file and file.filename and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_ext = os.path.splitext(filename)[1].lower()
+            
+            # 读取文件内容
+            file_data = file.read()
+            
+            try:
+                # 提取文本内容
+                file_content = extract_text_from_file(file_data, file_ext)
+                
+                # 将文件添加到用户消息
+                if user_message:
+                    user_message = f"File content:\n{file_content}\n\n{user_message}"
+                else:
+                    user_message = f"File content:\n{file_content}"
+                    
+                # 准备文件元数据，以便存入数据库
+                file_metadata = {
+                    'filename': filename,
+                    'content_type': file.content_type,
+                    'size': len(file_data),
+                    'data': Binary(file_data),
+                    'extracted_text': file_content
+                }
+            except Exception as e:
+                print(f"Error processing file: {str(e)}")
+                return jsonify({'error': f'Error processing file: {str(e)}'}), 400
+    
+    if not user_message and not 'file' in request.files:
+        return jsonify({'error': 'Message or file is required'}), 400
 
     try:
+        # 查找或创建聊天记录来获取历史消息
+        chat_history = []
+        if chat_id:
+            chat = chats_db.find_one({'_id': ObjectId(chat_id)})
+            if chat:
+                # 从聊天记录中提取消息，去除时间戳等额外信息
+                chat_history = [{'role': msg['role'], 'content': msg['content']} 
+                                for msg in chat['messages'] 
+                                if msg['role'] in ['user', 'assistant']]
+        
         # 调用 GPT 模型获取回复
-        assistant_message = get_gpt_response(user_message, chat_history)
+        assistant_message = get_gpt_response(user_message, chat_history, model)
         
         # 更新或创建聊天记录
         now = datetime.utcnow()
+        
+        # 准备用户消息对象
+        user_msg_obj = {
+            'role': 'user', 
+            'content': user_message, 
+            'timestamp': now
+        }
+        
+        # 如果有文件，添加文件元数据
+        if file_metadata:
+            user_msg_obj['file'] = file_metadata
+        
+        # 准备助手消息对象
+        assistant_msg_obj = {
+            'role': 'assistant',
+            'content': assistant_message,
+            'timestamp': now
+        }
         
         if chat_id:
             # 更新现有聊天
@@ -196,13 +262,10 @@ def chat():
                 {
                     '$push': {
                         'messages': {
-                            '$each': [
-                                {'role': 'user', 'content': user_message, 'timestamp': now},
-                                {'role': 'assistant', 'content': assistant_message, 'timestamp': now}
-                            ]
+                            '$each': [user_msg_obj, assistant_msg_obj]
                         }
                     },
-                    '$set': {'updated_at': now}
+                    '$set': {'updated_at': now, 'model': model}
                 }
             )
         else:
@@ -211,10 +274,8 @@ def chat():
             chats_db.insert_one({
                 '_id': ObjectId(chat_id),
                 'username': session['username'],
-                'messages': [
-                    {'role': 'user', 'content': user_message, 'timestamp': now},
-                    {'role': 'assistant', 'content': assistant_message, 'timestamp': now}
-                ],
+                'model': model,
+                'messages': [user_msg_obj, assistant_msg_obj],
                 'created_at': now,
                 'updated_at': now
             })
@@ -225,6 +286,9 @@ def chat():
         })
         
     except Exception as e:
+        print(f"Error in /chat route: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 # 添加获取聊天历史的路由
@@ -257,7 +321,7 @@ def get_chat_history():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# 添加获取特定聊天记录的路由
+# 更新 get_chat 路由以返回模型信息
 @app.route('/get_chat/<chat_id>', methods=['GET'])
 def get_chat(chat_id):
     if 'username' not in session:
@@ -270,16 +334,21 @@ def get_chat(chat_id):
             
         return jsonify({
             'chat_id': str(chat['_id']),
-            'messages': json.loads(json.dumps(chat['messages'], default=str))  # 处理日期序列化
+            'messages': json.loads(json.dumps(chat['messages'], default=str)),  # 处理日期序列化
+            'model': chat.get('model', 'gpt-4')  # 添加模型信息
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# 添加创建新聊天的路由
+
+# 修改创建新聊天的路由
 @app.route('/new_chat', methods=['POST'])
 def new_chat():
     if 'username' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
+    
+    data = request.json
+    model = data.get('model', 'gpt-4')  # 默认使用 GPT-4
         
     try:
         now = datetime.utcnow()
@@ -288,6 +357,7 @@ def new_chat():
         chats_db.insert_one({
             '_id': ObjectId(chat_id),
             'username': session['username'],
+            'model': model,  # 保存指定的模型
             'messages': [],
             'created_at': now,
             'updated_at': now
@@ -295,6 +365,89 @@ def new_chat():
         
         return jsonify({'chat_id': chat_id})
     except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+# 添加更新聊天模型的路由
+@app.route('/update_chat_model/<chat_id>', methods=['POST'])
+def update_chat_model(chat_id):
+    if 'username' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    data = request.json
+    model = data.get('model')
+    
+    if not model:
+        return jsonify({'error': 'Model is required'}), 400
+
+    try:
+        # 查找聊天并验证所有权
+        chat = chats_db.find_one({'_id': ObjectId(chat_id), 'username': session['username']})
+        if not chat:
+            return jsonify({'error': 'Chat not found or unauthorized'}), 404
+        
+        # 更新聊天使用的模型
+        chats_db.update_one(
+            {'_id': ObjectId(chat_id)},
+            {'$set': {'model': model}}
+        )
+        
+        # 添加一条系统消息，表示模型已切换（可选）
+        now = datetime.utcnow()
+        chats_db.update_one(
+            {'_id': ObjectId(chat_id)},
+            {
+                '$push': {
+                    'messages': {
+                        'role': 'system',
+                        'content': f"Switched to model: {model}",
+                        'timestamp': now
+                    }
+                }
+            }
+        )
+        
+        return jsonify({'success': True, 'message': f'Chat model updated to {model}'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+# 添加文件下载路由
+@app.route('/download_file/<chat_id>/<message_index>', methods=['GET'])
+def download_file(chat_id, message_index):
+    if 'username' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        chat = chats_db.find_one({'_id': ObjectId(chat_id), 'username': session['username']})
+        if not chat:
+            return jsonify({'error': 'Chat not found or unauthorized'}), 404
+        
+        # 获取指定的消息
+        messages = chat.get('messages', [])
+        msg_index = int(message_index)
+        
+        if msg_index < 0 or msg_index >= len(messages):
+            return jsonify({'error': 'Message index out of range'}), 404
+        
+        message = messages[msg_index]
+        
+        if 'file' not in message:
+            return jsonify({'error': 'No file in this message'}), 404
+            
+        file_data = message['file']
+        
+        # 发送文件到客户端
+        from flask import send_file
+        return send_file(
+            io.BytesIO(file_data['data']),
+            mimetype=file_data['content_type'],
+            as_attachment=True,
+            download_name=file_data['filename']
+        )
+    
+    except Exception as e:
+        print(f"Error downloading file: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

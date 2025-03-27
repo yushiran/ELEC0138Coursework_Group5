@@ -20,7 +20,16 @@
             <button id="sidebar-toggle" class="sidebar-toggle-btn">
                 <i class="fas fa-bars"></i>
             </button>
-            <i class="fas fa-robot"></i> AI Chat Platform
+            <i class="fas fa-robot"></i>
+            <div class="model-selector">
+                <span class="current-model">GPT-4</span>
+                <div class="model-dropdown">
+                    <div class="model-option" data-model="gpt-4">GPT-4</div>
+                    <div class="model-option" data-model="gpt-4o">GPT-4o</div>
+                    <div class="model-option" data-model="gpt-4-turbo">GPT-4 Turbo</div>
+                    <div class="model-option" data-model="gpt-3.5-turbo">GPT-3.5 Turbo</div>
+                </div>
+            </div>
         </div>
         <div class="user-info">
             <span>{{ first_name }} {{ last_name }}</span>
@@ -48,8 +57,22 @@
                 <!-- Chat messages will be dynamically loaded here -->
             </div>
             <div class="chat-input">
-                <textarea id="user-message" placeholder="Type your message here..."></textarea>
-                <button id="send-button"><i class="fas fa-paper-plane"></i> Send</button>
+                <!-- 修改文件上传容器部分 -->
+                    <div class="file-upload-container">
+                        <label for="file-upload" class="file-upload-label">
+                            <i class="fas fa-paperclip"></i>
+                            <span>Attach File</span>
+                        </label>
+                        <input type="file" id="file-upload" accept=".txt,.pdf,.doc,.docx">
+                        <div id="file-info" style="display: none;">
+                            <span id="file-name"></span>
+                            <button id="remove-file" type="button">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <textarea id="user-message" placeholder="Type your message here..."></textarea>
+                    <button id="send-button"><i class="fas fa-paper-plane"></i> Send</button>
             </div>
         </div>
     </div>
