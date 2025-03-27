@@ -124,7 +124,23 @@ def register():
         last_name = request.form['last_name']
         username = request.form['username']
         password = request.form['password']
-        # email = request.form['email']
+        confirm_password = request.form['confirm_password']
+
+        # Check if passwords match
+        if password != confirm_password:
+            return "Passwords do not match. <a href='/register'>Try again</a>"
+
+        # Password security validation
+        if len(password) < 8:
+            return "Password must be at least 8 characters long. <a href='/register'>Try again</a>"
+        
+        # Check if password contains both letters and numbers
+        if not (any(c.isalpha() for c in password) and any(c.isdigit() for c in password)):
+            return "Password must contain both letters and numbers. <a href='/register'>Try again</a>"
+        
+        # Check if password contains at least one uppercase letter
+        if not any(c.isupper() for c in password):
+            return "Password must contain at least one uppercase letter. <a href='/register'>Try again</a>"
 
         users = client.get_database("ai_platform").get_collection("login")
         existing_user = users.find_one({'username': username})
