@@ -50,7 +50,7 @@ cd ELEC0138Coursework_Group5
 ```
 2. **Create and Activate Virtual Environment**
 ```bash
-cd env
+cd flask_backend/env
 conda env create -f environments.yml
 conda activate security
 ```
@@ -59,16 +59,18 @@ conda activate security
 Create a `.env` file in the `flask_backend` directory with the following content:
 ```bash
 OPENAI_API_KEY=your_openai_api_key
-MONGODB_URI=mongodb://localhost:27017/
+MONGODB_URI=your mongodb culster url 
 GITHUB_CLIENT_ID=your_github_client_id
 GITHUB_CLIENT_SECRET=your_github_client_secret
 FLASK_SECRET_KEY=your_secret_key
 ```
+For more details on apply for github's OAuth ID&Secert key, you could refer [this guide](https://testdriven.io/blog/flask-social-auth/#user-management).
 
 ## Usage Guide
 Starting the Application
 1. **Launch the Server**
 ```bash
+cd flask_backend
 python app.py
 ```
 
