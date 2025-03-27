@@ -1,22 +1,30 @@
-from flask import Flask, render_template, request, redirect, session, jsonify
+from flask import Flask, render_template, request, redirect, session, jsonify,url_for
 from pymongo.mongo_client import MongoClient
 from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
+from flask_dance.contrib.github import github
 import os
+from config import *
+
+from src.github_log import github_blueprint
 
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
-app.config['MONGO_URI'] = os.getenv('MONGO_URI')
+app.secret_key = project_config.SECRET_KEY
+app.config['MONGO_URI'] = project_config.MONGO_URI
+app.config['REDIRECT_URI'] = project_config.REDIRECT_URI
+
+app.register_blueprint(github_blueprint, url_prefix="/login")
+
+
 client = MongoClient(app.config['MONGO_URI'])
-database = client.get_database("ai_platform")
-login_db = database.get_collection("login")
 bcrypt = Bcrypt(app)
 
 try:
     database = client.get_database("ai_platform")
     login_db = client.get_database("ai_platform").get_collection("login")
+    login_sessions_db = client.get_database("ai_platform").get_collection("login_sessions")
     
     # Check if the collection is empty
     if login_db.count_documents({}) == 0:
@@ -28,6 +36,8 @@ try:
         print("Initialized the login collection with default admin credentials.")
 except Exception as e:
     raise Exception("Unable to find the document due to the following error: ", e)
+
+
 
 @app.route('/')
 def index():
@@ -44,13 +54,41 @@ def login():
         if user_data and bcrypt.check_password_hash(user_data['password'], password):
             session['username'] = username
             
-            login_sessions = database.get_collection("login_sessions")
+            login_sessions = login_sessions_db
             login_sessions.insert_one({'username': username})
             
             return redirect('/secured')
         else:
             return "Invalid username or password. <a href='/login'>Try again</a>"
     return render_template('login.html')
+
+@app.route("/github")
+def github_login():
+    if not github.authorized:
+        return redirect(url_for("github.login"))
+    res = github.get("/user")
+
+    if res.ok:
+        user_data = res.json()
+        username = user_data.get('id')
+        email = user_data.get('email', '')
+
+        # Check if the GitHub user already exists in the database
+        github_users = client.get_database("ai_platform").get_collection("login")
+        existing_user = github_users.find_one({'username': username})
+
+        if not existing_user:
+            # If the user does not exist, save GitHub user data to the database
+            github_users.insert_one({'username': username, 'email': email})
+
+        session['username'] = username
+            
+        login_sessions = login_sessions_db
+        login_sessions.insert_one({'username': username})
+
+        return redirect('/secured')
+    else:
+        return "Failed to fetch GitHub user data. <a href='/login'>Try again</a>"
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -59,6 +97,7 @@ def register():
         last_name = request.form['last_name']
         username = request.form['username']
         password = request.form['password']
+        # email = request.form['email']
 
         users = client.get_database("ai_platform").get_collection("login")
         existing_user = users.find_one({'username': username})
@@ -87,7 +126,7 @@ def secured():
 @app.route('/logout')
 def logout():
     if 'username' in session:
-        login_sessions = database.get_collection("login_sessions")
+        login_sessions = login_sessions_db
         login_sessions.delete_one({'username': session['username']})
 
     session.pop('username', None)
