@@ -21,4 +21,6 @@ class Config:
         self.GITHUB_TOKEN_ENDPOINT = "https://github.com/login/oauth/access_token"
         self.GITHUB_USER_ENDPOINT = "https://api.github.com/user"
 
+        self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
 project_config = Config()
