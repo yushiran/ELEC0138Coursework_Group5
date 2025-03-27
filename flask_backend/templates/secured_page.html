@@ -1,39 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Secured Page</title>
-    <!-- Include Google Fonts -->
+    <title>Chat Interface</title>
+    <!-- Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <!-- Include Font Awesome via CDN -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='secure.css') }}">
-    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
 </head>
+
 <body>
-    <div class="container">
-        <!-- Navbar section with K-Flare brand and Logout link -->
-        <div class="navbar">
-            <h1><i class="fas fa-fire"></i> K-Flare</h1>
-            <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <div class="navbar-brand">
+            <button id="sidebar-toggle" class="sidebar-toggle-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <i class="fas fa-robot"></i>
+            <div class="model-selector">
+                <span class="current-model">GPT-4</span>
+                <div class="model-dropdown">
+                    <div class="model-option" data-model="gpt-4">GPT-4</div>
+                    <div class="model-option" data-model="gpt-4o">GPT-4o</div>
+                    <div class="model-option" data-model="gpt-4-turbo">GPT-4 Turbo</div>
+                    <div class="model-option" data-model="gpt-3.5-turbo">GPT-3.5 Turbo</div>
+                </div>
+            </div>
         </div>
-        <!-- Introduction section with rich UI effects -->
-        <div class="intro-container">
-            <h3>Dear, {{ first_name }} {{ last_name }}!</h3>
-            <h2>Welcome to K-Flare, a new social media platform!</h2>
-            <p>K-Flare is a social media platform designed for sharing information and communication, especially beneficial for students collaborating on projects.</p>
-            <p>With K-Flare, you can connect with classmates, share project updates, exchange ideas, and collaborate seamlessly.</p>
-            <p>K-Flare offers features such as:</p>
-            <ul>
-                <li><strong>Project Collaboration:</strong> Create project groups, share resources, and communicate effectively with your team members.</li>
-                <li><strong>Knowledge Sharing:</strong> Share your expertise, ask questions, and learn from others in your field of interest.</li>
-                <li><strong>Event Organization:</strong> Plan and promote events within your community or organization, and invite others to participate.</li>
-                <li><strong>Privacy and Security:</strong> K-Flare prioritizes user privacy and data security, ensuring a safe and secure environment for all users.</li>
-            </ul>
-            <p>Join K-Flare today and experience a new way of collaborating and connecting with others!</p>
+        <div class="user-info">
+            <span>{{ first_name }} {{ last_name }}</span>
+            <a href="/logout" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
         </div>
     </div>
+
+    <div class="chat-container">
+        <!-- Sidebar for chat history -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Chat History</h2>
+                <button id="new-chat-button" class="new-chat-btn"><i class="fas fa-plus"></i> New Chat</button>
+            </div>
+            <ul id="chat-history-list">
+                <!-- Chat history items will be dynamically loaded here -->
+            </ul>
+        </div>
+
+        <!-- Main chat area -->
+        <div class="chat-main">
+            <div id="chat-history" class="chat-history">
+                <!-- Chat messages will be dynamically loaded here -->
+            </div>
+            <div class="chat-input">
+                <!-- 修改文件上传容器部分 -->
+                    <div class="file-upload-container">
+                        <label for="file-upload" class="file-upload-label">
+                            <i class="fas fa-paperclip"></i>
+                            <span>Attach File</span>
+                        </label>
+                        <input type="file" id="file-upload" accept=".txt,.pdf,.doc,.docx">
+                        <div id="file-info" style="display: none;">
+                            <span id="file-name"></span>
+                            <button id="remove-file" type="button">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <textarea id="user-message" placeholder="Type your message here..."></textarea>
+                    <button id="send-button"><i class="fas fa-paper-plane"></i> Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='chat.js') }}"></script>
 </body>
+
 </html>

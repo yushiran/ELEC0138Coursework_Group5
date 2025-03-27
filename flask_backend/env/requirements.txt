@@ -21,3 +21,7 @@ dotenv
 flask-jwt-extended 
 pymysql
 pymongo
+flask_oauth
+flask_dance
+PyPDF2
+python-docx
