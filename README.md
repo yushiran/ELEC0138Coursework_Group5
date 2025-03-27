@@ -1,7 +1,7 @@
 # AI Chat Platform
-![GitHub Repo stars](https://img.shields.io/github/stars/yourusername/ELEC0138Coursework_Group5?style=social)
-![GitHub contributors](https://img.shields.io/github/contributors/yourusername/ELEC0138Coursework_Group5)
-![GitHub last commit](https://img.shields.io/github/last-commit/yourusername/ELEC0138Coursework_Group5)
+![GitHub Repo stars](https://img.shields.io/github/stars/yushiran/ELEC0138Coursework_Group5?style=social)
+![GitHub contributors](https://img.shields.io/github/contributors/yushiran/ELEC0138Coursework_Group5)
+![GitHub last commit](https://img.shields.io/github/last-commit/yushiran/ELEC0138Coursework_Group5)
 
 ## Features
 
