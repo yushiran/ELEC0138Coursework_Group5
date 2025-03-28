@@ -9,9 +9,12 @@
 body {
     font-family: 'Poppins', sans-serif;
     background-image: url('https://www.chromethemer.com/wallpapers/chromebook-wallpapers/images/960/dark-blue-polygon-chromebook-wallpaper.jpg');
-     background-repeat: no-repeat; /* Prevent background image from repeating */
-    background-size: cover; /* Cover the entire background */
-    background-position: fixed; /* Fix the background position */
+    background-repeat: no-repeat;
+    /* Prevent background image from repeating */
+    background-size: cover;
+    /* Cover the entire background */
+    background-position: fixed;
+    /* Fix the background position */
     color: white;
     display: flex;
     justify-content: center;
@@ -71,20 +74,22 @@ button {
 
     transition: background-color 0.3s ease;
     width: 50%;
-    margin: 0 auto; /* center the button */
+    margin: 0 auto;
+    /* center the button */
 }
 
 button:hover {
     box-shadow: 0 4px 10px 0 rgb(139, 130, 238);
     background-color: #0202bb;
-    transform: scale(1.05); /* increase the size */
+    transform: scale(1.05);
+    /* increase the size */
 }
 
 p {
     text-align: center;
     margin-top: 20px;
     color: #544b4bbe;
-    font-weight:600;
+    font-weight: 600;
 }
 
 a {
@@ -98,46 +103,54 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
 svg {
     width: 250px;
     height: 250px;
     border-radius: 10%;
     float: left;
 }
+
 .input-icon {
     position: relative;
-  }
-  .input-icon input {
-    padding-left: 40px; /* Adjust based on icon width and padding */
-    padding-right: 40px; /* Adjust based on icon width and padding */
-  }
-  
-  .input-icon i {
+}
+
+.input-icon input {
+    padding-left: 40px;
+    /* Adjust based on icon width and padding */
+    padding-right: 40px;
+    /* Adjust based on icon width and padding */
+}
+
+.input-icon i {
     position: absolute;
     top: 40%;
     transform: translateY(-50%);
-    color: #000; /* Set icon color to black */
-    padding: 10px; /* Adjust based on the size of the icon */
-  }
-  
-  
-  .input-icon i.lock-icon {
-    left: 5px;
-  }
-  
-  .input-icon i.eye-icon {
-    right: 5px;
-  }
-  body{
-    background-color: white;
-  }
-  
-  button i {
-    margin-right: 5px;
-  }
-  
+    color: #000;
+    /* Set icon color to black */
+    padding: 10px;
+    /* Adjust based on the size of the icon */
+}
 
-  /* Add this to your existing login.css */
+
+.input-icon i.lock-icon {
+    left: 5px;
+}
+
+.input-icon i.eye-icon {
+    right: 5px;
+}
+
+body {
+    background-color: white;
+}
+
+button i {
+    margin-right: 5px;
+}
+
+
+/* Add this to your existing login.css */
 
 .forgot-password {
     margin-top: 10px;
@@ -152,4 +165,50 @@ svg {
 
 .forgot-password a:hover {
     text-decoration: underline;
+}
+
+.message.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+/* 锁定状态下的发送验证码按钮 */
+#send-code-btn.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* 添加消息提示样式 */
+#message-container {
+    margin-top: 15px;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.message.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+/* 锁定状态下的发送验证码按钮 */
+#send-code-btn.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }

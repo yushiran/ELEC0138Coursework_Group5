@@ -18,6 +18,7 @@ from src.github_log import github_blueprint
 from src.gpt import get_gpt_response
 from src.file_edit import allowed_file, extract_text_from_file
 from src.email import generate_verification_code, send_verification_email, send_password_reset_email
+from src.login_limiit import update_login_attempts
 
 load_dotenv()
 
@@ -36,8 +37,10 @@ try:
     login_db = client.get_database("ai_platform").get_collection("login")
     login_sessions_db = client.get_database("ai_platform").get_collection("login_sessions")
     chats_db = client.get_database("ai_platform").get_collection("chats")  # 新增聊天记录集合
+    login_verification_db = client.get_database("ai_platform").get_collection("login_verifications")
     verification_db = client.get_database("ai_platform").get_collection("verification_codes")
-    
+    login_attempts_db = client.get_database("ai_platform").get_collection("login_attempts")
+
     # Check if the collection is empty
     if login_db.count_documents({}) == 0:
         # Insert initial data
@@ -62,6 +65,24 @@ def send_login_code():
         data = request.get_json()
         username = data.get('username')
         password = data.get('password')
+
+        # 检查账户是否被锁定
+        login_attempt = login_attempts_db.find_one({'username': username})
+        if login_attempt and login_attempt.get('locked_until'):
+            locked_until = login_attempt.get('locked_until')
+            if datetime.utcnow() < locked_until:
+                # 计算剩余锁定时间
+                remaining_time = int((locked_until - datetime.utcnow()).total_seconds() / 60)
+                return jsonify({
+                    'success': False, 
+                    'error': f'账户已被锁定，请在{remaining_time}分钟后再试'
+                }), 403
+            else:
+                # 锁定时间已过，重置登录尝试
+                login_attempts_db.update_one(
+                    {'username': username},
+                    {'$set': {'failed_attempts': 0, 'locked_until': None}}
+                )
         
         # 验证用户名和密码
         user = login_db.find_one({'username': username})
@@ -69,7 +90,24 @@ def send_login_code():
             return jsonify({'success': False, 'error': '用户不存在'}), 400
             
         if not bcrypt.check_password_hash(user['password'], password):
-            return jsonify({'success': False, 'error': '密码错误'}), 400
+            # 增加失败登录次数并可能锁定账户
+            update_login_attempts(username, login_attempts_db=login_attempts_db,success=False)
+            
+            # 再次查询以获取最新的锁定状态
+            updated_attempt = login_attempts_db.find_one({'username': username})
+            if updated_attempt and updated_attempt.get('locked_until') and datetime.utcnow() < updated_attempt.get('locked_until'):
+                # 账户被锁定，返回锁定信息
+                remaining_time = int((updated_attempt['locked_until'] - datetime.utcnow()).total_seconds() / 60)
+                return jsonify({
+                    'success': False, 
+                    'error': f'密码错误，账户已被锁定，请在{remaining_time}分钟后再试'
+                }), 403
+            else:
+                # 账户未锁定，返回普通密码错误信息
+                return jsonify({'success': False, 'error': '密码错误'}), 400
+        
+        # 登录成功，重置失败次数
+        update_login_attempts(username,login_attempts_db=login_attempts_db, success=True)
         
         # 生成验证码
         verification_code = generate_verification_code()
@@ -78,7 +116,6 @@ def send_login_code():
         expiration_time = datetime.utcnow() + timedelta(minutes=10)
         
         # 创建或更新验证码记录
-        login_verification_db = client.get_database("ai_platform").get_collection("login_verifications")
         login_verification_db.update_one(
             {'username': username},
             {'$set': {
@@ -110,6 +147,14 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         verification_code = request.form.get('verification_code')
+
+        # 检查账户是否被锁定
+        login_attempt = login_attempts_db.find_one({'username': username})
+        if login_attempt and login_attempt.get('locked_until'):
+            locked_until = login_attempt.get('locked_until')
+            if datetime.utcnow() < locked_until:
+                remaining_minutes = int((locked_until - datetime.utcnow()).total_seconds() / 60)
+                return f"账户已被锁定，请在{remaining_minutes}分钟后再试 <a href='/login'>返回</a>"
         
         if not verification_code:
             return "请输入验证码 <a href='/login'>返回</a>"
@@ -123,7 +168,6 @@ def login():
             return "密码错误 <a href='/login'>返回</a>"
             
         # 验证验证码
-        login_verification_db = client.get_database("ai_platform").get_collection("login_verifications")
         verification = login_verification_db.find_one({
             'username': username,
             'verification_code': verification_code,
@@ -132,6 +176,9 @@ def login():
         
         if not verification:
             return "验证码无效或已过期 <a href='/login'>返回</a>"
+        
+        # 验证通过，重置失败次数
+        update_login_attempts(username, login_attempts_db=login_attempts_db,success=True)
             
         # 验证通过，删除验证记录
         login_verification_db.delete_one({'username': username})
