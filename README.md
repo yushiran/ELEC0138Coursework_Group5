@@ -51,7 +51,7 @@ cd ELEC0138Coursework_Group5
 2. **Create and Activate Virtual Environment**
 ```bash
 cd flask_backend/env
-conda env create -f environments.yml
+conda env create -f environment.yml
 conda activate security
 ```
 3. **Configure Environment Variables**
