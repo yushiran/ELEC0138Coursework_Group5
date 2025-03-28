@@ -1,17 +1,20 @@
 function togglePasswordVisibility() {
-  var passwordInput = document.getElementById("password");
-  var toggleIcon = document.getElementById("togglePassword");
-
-  if (passwordInput.type === "password") {
-    passwordInput.type = "text";
-    toggleIcon.classList.remove("fa-eye-slash");
-    toggleIcon.classList.add("fa-eye");
-  } else {
-    passwordInput.type = "password";
-    toggleIcon.classList.remove("fa-eye");
-    toggleIcon.classList.add("fa-eye-slash");
+  const passwordInput = document.getElementById("password");
+  const toggleIcon = document.getElementById("togglePassword");
+  
+  if (passwordInput && toggleIcon) {
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      toggleIcon.classList.remove("fa-eye-slash");
+      toggleIcon.classList.add("fa-eye");
+    } else {
+      passwordInput.type = "password";
+      toggleIcon.classList.remove("fa-eye");
+      toggleIcon.classList.add("fa-eye-slash");
+    }
   }
 }
+
 document.addEventListener('DOMContentLoaded', function () {
   console.log("登录页面脚本已加载");
 
@@ -59,8 +62,15 @@ document.addEventListener('DOMContentLoaded', function () {
           password: password
         }),
       })
-        .then(response => response.json())
-        .then(data => {
+        .then(response => {
+          // 保存状态码，以便后续处理特殊情况
+          const status = response.status;
+          return response.json().then(data => {
+            // 将状态码和数据一起返回
+            return { status, data };
+          });
+        })
+        .then(({ status, data }) => {
           sendCodeBtn.disabled = false;
           sendCodeBtn.innerHTML = '<i class="fas fa-paper-plane"></i> 获取验证码';
 
@@ -73,7 +83,16 @@ document.addEventListener('DOMContentLoaded', function () {
               loginBtn.style.display = 'block';
             }
           } else {
-            showMessage(data.error || '发送验证码失败', 'error');
+            // 检查是否是账户锁定的错误
+            if (status === 403) {
+              // 特殊显示锁定信息
+              showMessage(data.error, 'warning');
+              // 可以禁用发送验证码按钮，直到锁定时间结束
+              sendCodeBtn.disabled = true;
+              sendCodeBtn.classList.add('disabled');
+            } else {
+              showMessage(data.error || '发送验证码失败', 'error');
+            }
           }
         })
         .catch(error => {
