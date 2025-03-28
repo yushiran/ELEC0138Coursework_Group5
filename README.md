@@ -58,11 +58,19 @@ conda activate security
 
 Create a `.env` file in the `flask_backend` directory with the following content:
 ```bash
-OPENAI_API_KEY=your_openai_api_key
-MONGODB_URI=your mongodb culster url 
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
-FLASK_SECRET_KEY=your_secret_key
+# Environment Variables
+
+- `OPENAI_API_KEY`: Your OpenAI API key for accessing GPT models.
+- `MONGODB_URI`: The connection string for your MongoDB database.
+- `GITHUB_CLIENT_ID`: The client ID for GitHub OAuth integration.
+- `GITHUB_CLIENT_SECRET`: The client secret for GitHub OAuth integration.
+- `FLASK_SECRET_KEY`: A secret key used for Flask session management and security.
+
+# Email Settings
+
+- `EMAIL_USERNAME`: The email address used for sending emails.
+- `EMAIL_PASSWORD`: The app-specific password for the email account.
+- `EMAIL_FROM`: The sender's email address for outgoing emails.
 ```
 For more details on apply for github's OAuth ID&Secert key, you could refer [this guide](https://testdriven.io/blog/flask-social-auth/#user-management).
 
