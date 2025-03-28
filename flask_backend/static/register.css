@@ -1,190 +1,249 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background-image: url('https://c4.wallpaperflare.com/wallpaper/690/128/838/line-obliquely-purple-bright-wallpaper-preview.jpg');
-     background-repeat: no-repeat; /* Prevent background image from repeating */
-    background-size: cover; /* Cover the entire background */
-    background-position: fixed; /* Fix the background position */
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  background-image: url('https://c4.wallpaperflare.com/wallpaper/690/128/838/line-obliquely-purple-bright-wallpaper-preview.jpg');
+  background-repeat: no-repeat;
+  /* Prevent background image from repeating */
+  background-size: cover;
+  /* Cover the entire background */
+  background-position: fixed;
+  /* Fix the background position */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .container {
-    background-color: #fffffff8;
-    border-radius: 30px;
-    box-shadow: 0 5px 10px 0 rgb(242, 0, 255);
-    width: 700px;
-    padding: 20px;
+  background-color: #fffffff8;
+  border-radius: 30px;
+  box-shadow: 0 5px 10px 0 rgb(242, 0, 255);
+  width: 700px;
+  padding: 20px;
 }
 
 h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #660068;
-    font-size: 30px;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #660068;
+  font-size: 30px;
 }
 
 form {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 input {
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px 0 blueviolet;
-    outline: none;
-    font-family: inherit;
-    border: none;
-    width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px 0 blueviolet;
+  outline: none;
+  font-family: inherit;
+  border: none;
+  width: 100%;
 }
 
 input:focus {
-    border: 3px solid rgba(110, 2, 210, 0.527);
-    color: rgb(0, 0, 0);
-    font-size: 17px;
-    font-weight: 900;
+  border: 3px solid rgba(110, 2, 210, 0.527);
+  color: rgb(0, 0, 0);
+  font-size: 17px;
+  font-weight: 900;
 }
 
 button {
-    background-color: #620065;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    border-radius: 15px;
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: 1000;
-    font-size: 16px;
-    box-shadow: 0 2px 4px 0 blueviolet;
+  background-color: #620065;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 1000;
+  font-size: 16px;
+  box-shadow: 0 2px 4px 0 blueviolet;
 
-    transition: background-color 0.3s ease;
-    width: 50%;
-    margin: 0 auto; /* center the button */
+  transition: background-color 0.3s ease;
+  width: 50%;
+  margin: 0 auto;
+  /* center the button */
 }
 
 button:hover {
-    box-shadow: 0 4px 10px 0 violet;
-    background-color: #b502bb;
-    transform: scale(1.05); /* increase the size */
+  box-shadow: 0 4px 10px 0 violet;
+  background-color: #b502bb;
+  transform: scale(1.05);
+  /* increase the size */
 }
 
 p {
-    text-align: center;
-    margin-top: 20px;
-    color: #544b4bbe;
-    font-weight:600;
+  text-align: center;
+  margin-top: 20px;
+  color: #544b4bbe;
+  font-weight: 600;
 }
 
 a {
-    color: #ff00ff;
-    text-decoration: none;
-    font-size: 20px;
-    transition: color 0.3s ease;
-    font-weight: 1100;
+  color: #ff00ff;
+  text-decoration: none;
+  font-size: 20px;
+  transition: color 0.3s ease;
+  font-weight: 1100;
 }
 
 a:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
+
 svg {
-    width: 300px;
-    height: 300px;
-    border-radius: 10%;
-    float: left;
+  width: 300px;
+  height: 300px;
+  border-radius: 10%;
+  float: left;
 }
+
 .input-icon {
-    position: relative;
-  }
-  .input-icon input {
-    padding-left: 40px; /* Adjust based on icon width and padding */
-    padding-right: 40px; /* Adjust based on icon width and padding */
-  }
-  
-  .input-icon i {
-    position: absolute;
-    top: 40%;
-    transform: translateY(-50%);
-    color: #000; /* Set icon color to black */
-    padding: 10px; /* Adjust based on the size of the icon */
-  }
-  
-  
-  .input-icon i.lock-icon {
-    left: 5px;
-  }
-  
-  .input-icon i.eye-icon {
-    right: 5px;
-  }
-  
-  button i {
-    margin-right: 5px;
-  }
-  
-  /* Add these styles to your existing CSS file */
+  position: relative;
+}
+
+.input-icon input {
+  padding-left: 40px;
+  /* Adjust based on icon width and padding */
+  padding-right: 40px;
+  /* Adjust based on icon width and padding */
+}
+
+.input-icon i {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  color: #000;
+  /* Set icon color to black */
+  padding: 10px;
+  /* Adjust based on the size of the icon */
+}
+
+
+.input-icon i.lock-icon {
+  left: 5px;
+}
+
+.input-icon i.eye-icon {
+  right: 5px;
+}
+
+button i {
+  margin-right: 5px;
+}
+
+/* Add these styles to your existing CSS file */
 
 .password-requirements {
-    margin: 15px 0;
-    padding: 15px;
-    border-left: 4px solid #BA68C8;
-    background-color: #f9f9f9;
-    border-radius: 4px;
-  }
-  
-  .password-requirements h4 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #444;
-    font-size: 14px;
-  }
-  
-  .requirement {
-    margin: 5px 0;
-    font-size: 13px;
-    color: #666;
-    display: flex;
-    align-items: center;
-  }
-  
-  .requirement i {
-    margin-right: 8px;
-    font-size: 14px;
-  }
-  
-  .requirement.valid i {
-    color: #4CAF50;
-  }
-  
-  .requirement.invalid i {
-    color: #f44336;
-  }
-  
-  .requirement.valid {
-    color: #4CAF50;
-  }
-  
-  .requirement.invalid {
-    color: #f44336;
-  }
-  
-  #registerBtn {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-  
-  #registerBtn.active {
-    opacity: 1;
-    cursor: pointer;
-  }
+  margin: 15px 0;
+  padding: 15px;
+  border-left: 4px solid #BA68C8;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.password-requirements h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #444;
+  font-size: 14px;
+}
+
+.requirement {
+  margin: 5px 0;
+  font-size: 13px;
+  color: #666;
+  display: flex;
+  align-items: center;
+}
+
+.requirement i {
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.requirement.valid i {
+  color: #4CAF50;
+}
+
+.requirement.invalid i {
+  color: #f44336;
+}
+
+.requirement.valid {
+  color: #4CAF50;
+}
+
+.requirement.invalid {
+  color: #f44336;
+}
+
+#registerBtn {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+#registerBtn.active {
+  opacity: 1;
+  cursor: pointer;
+}
+
+/* Add these styles to your existing register.css file */
+
+#verification-section {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+}
+
+#verification-section p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+#send-verification-btn {
+  background-color: #8e44ad;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  width: 100%;
+  font-weight: bold;
+}
+
+#send-verification-btn:hover {
+  background-color: #733a8c;
+}
+
+#register-btn {
+  background-color: #8e44ad;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  width: 100%;
+  font-weight: bold;
+}
+
+#register-btn:hover {
+  background-color: #733a8c;
+}

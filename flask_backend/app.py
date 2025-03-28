@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from flask_dance.contrib.github import github
 import os
 import openai 
-from datetime import datetime
+from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 import json
 from bson.binary import Binary
@@ -19,13 +19,14 @@ from config import *
 from src.github_log import github_blueprint
 from src.gpt import get_gpt_response
 from src.file_edit import allowed_file, extract_text_from_file
+from src.email import generate_verification_code, send_verification_email, send_password_reset_email
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = project_config.SECRET_KEY
 app.config['MONGO_URI'] = project_config.MONGO_URI
-app.config['REDIRECT_URI'] = project_config.REDIRECT_URI
+# app.config['REDIRECT_URI'] = project_config.REDIRECT_URI
 
 app.register_blueprint(github_blueprint, url_prefix="/login")
 
@@ -37,7 +38,7 @@ try:
     login_db = client.get_database("ai_platform").get_collection("login")
     login_sessions_db = client.get_database("ai_platform").get_collection("login_sessions")
     chats_db = client.get_database("ai_platform").get_collection("chats")  # 新增聊天记录集合
-
+    verification_db = client.get_database("ai_platform").get_collection("verification_codes")
     
     # Check if the collection is empty
     if login_db.count_documents({}) == 0:
@@ -59,20 +60,26 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        username_or_email = request.form['username']  # Form field keeps the name 'username' for compatibility
         password = request.form['password']
 
-        user_data = login_db.find_one({'username': username})
+        # Try to find user by username first
+        user_data = login_db.find_one({'username': username_or_email})
+        
+        # If not found by username, try email
+        if not user_data:
+            user_data = login_db.find_one({'email': username_or_email})
 
         if user_data and bcrypt.check_password_hash(user_data['password'], password):
-            session['username'] = username
+            # Store the actual username in the session (not email)
+            session['username'] = user_data['username']
             
             login_sessions = login_sessions_db
-            login_sessions.insert_one({'username': username})
+            login_sessions.insert_one({'username': user_data['username']})
             
             return redirect('/secured')
         else:
-            return "Invalid username or password. <a href='/login'>Try again</a>"
+            return "Invalid username/email or password. <a href='/login'>Try again</a>"
     return render_template('login.html')
 
 @app.route('/login/github/authorized')
@@ -117,14 +124,15 @@ def github_login():
     else:
         return "Failed to fetch GitHub user data. <a href='/login'>Try again</a>"
 
+# Update your existing register route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
+        email = request.form['email']
         username = request.form['username']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
+        verification_code = request.form['verification_code']
 
         # Check if passwords match
         if password != confirm_password:
@@ -142,15 +150,30 @@ def register():
         if not any(c.isupper() for c in password):
             return "Password must contain at least one uppercase letter. <a href='/register'>Try again</a>"
 
+        # Verify the code
+        verification_data = verification_db.find_one({
+            'email': email,
+            'username': username,
+            'verification_code': verification_code,
+            'expires_at': {'$gt': datetime.utcnow()}  # Code must not be expired
+        })
+        
+        if not verification_data:
+            return "Invalid or expired verification code. <a href='/register'>Try again</a>"
+        
+        # All checks passed, create the account
         users = client.get_database("ai_platform").get_collection("login")
-        existing_user = users.find_one({'username': username})
-
-        if existing_user:
-            return "Username already exists. <a href='/register'>Try again</a>"
-
-        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        users.insert_one({'first_name': first_name, 'last_name': last_name, 'username': username, 'password': hashed_password})
+        users.insert_one({
+            'email': email,
+            'username': username,
+            'password': verification_data['password']  # Use the already hashed password
+        })
+        
+        # Remove the verification record
+        verification_db.delete_one({'email': email})
+        
         return redirect('/login')
+    
     return render_template('register.html')
 
 @app.route('/secured')
@@ -159,18 +182,15 @@ def secured():
         users = login_db
         user_data = users.find_one({'username': session['username']})
 
-        # 如果是通过GitHub登录的用户，可能没有first_name和last_name
-        first_name = user_data.get('first_name', 'User')
-        last_name = user_data.get('last_name', '')
+        username = session['username']
         
-        # GitHub用户可能只有用户名
-        if first_name == 'User' and 'email' in user_data:
-            # 如果有email，可以显示email的用户名部分
-            email = user_data.get('email', '')
-            if email:
-                first_name = email.split('@')[0]
+        # For GitHub users with email, we can still show part of it
+        if 'email' in user_data:
+            display_name = user_data.get('email', '') or username
+        else:
+            display_name = username
 
-        return render_template('secured_page.html', first_name=first_name, last_name=last_name)
+        return render_template('secured_page.html', username=display_name)
     else:
         return redirect('/login')
     
@@ -465,6 +485,189 @@ def download_file(chat_id, message_index):
         import traceback
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
+
+@app.route('/send_verification', methods=['POST'])
+def send_verification():
+    if request.method != 'POST':
+        return jsonify({'success': False, 'error': 'Invalid request method'})
+
+    data = request.json
+    email = data.get('email')
+    username = data.get('username')
+    password = data.get('password')
+
+    # Validate email
+    if not email or '@' not in email:
+        return jsonify({'success': False, 'error': 'Invalid email address'})
+
+    # Check if username already exists
+    users = client.get_database("ai_platform").get_collection("login")
+    existing_user = users.find_one({'username': username})
+    if existing_user:
+        return jsonify({'success': False, 'error': 'Username already exists'})
+
+    # Check if email already exists
+    existing_email = users.find_one({'email': email})
+    if existing_email:
+        return jsonify({'success': False, 'error': 'Email already registered'})
+
+    # Generate verification code
+    verification_code = generate_verification_code()
+    
+    # Store verification data
+    expiration_time = datetime.utcnow() + timedelta(minutes=10)  # Code expires in 10 minutes
+    
+    # Hash the password for security
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    # Store or update verification data
+    verification_db.update_one(
+        {'email': email},
+        {
+            '$set': {
+                'username': username,
+                'password': hashed_password,
+                'verification_code': verification_code,
+                'expires_at': expiration_time
+            }
+        },
+        upsert=True
+    )
+    
+    # Send verification email
+    if send_verification_email(email, verification_code, username):
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'error': 'Failed to send verification email'})
+
+@app.route('/forgot_password')
+def forgot_password():
+    return render_template('forgot_password.html')
+
+@app.route('/send_reset_code', methods=['POST'])
+def send_reset_code():
+    if request.method != 'POST':
+        return jsonify({'success': False, 'error': 'Invalid request method'})
+
+    data = request.json
+    email = data.get('email')
+
+    # Validate email
+    if not email or '@' not in email:
+        return jsonify({'success': False, 'error': 'Invalid email address'})
+
+    # Check if email exists in database
+    users = client.get_database("ai_platform").get_collection("login")
+    user = users.find_one({'email': email})
+    if not user:
+        return jsonify({'success': False, 'error': 'Email not found'})
+
+    # Generate verification code
+    verification_code = generate_verification_code()
+    
+    # Store verification data
+    expiration_time = datetime.utcnow() + timedelta(minutes=10)  # Code expires in 10 minutes
+    
+    # Create password reset entry in DB
+    reset_db = client.get_database("ai_platform").get_collection("password_resets")
+    reset_db.update_one(
+        {'email': email},
+        {
+            '$set': {
+                'verification_code': verification_code,
+                'expires_at': expiration_time
+            }
+        },
+        upsert=True
+    )
+    
+    # Send password reset verification email
+    if send_password_reset_email(email, verification_code):
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'error': 'Failed to send verification email'})
+
+@app.route('/verify_reset_code', methods=['POST'])
+def verify_reset_code():
+    if request.method != 'POST':
+        return jsonify({'success': False, 'error': 'Invalid request method'})
+
+    data = request.json
+    email = data.get('email')
+    verification_code = data.get('verification_code')
+
+    # Validate inputs
+    if not email or not verification_code:
+        return jsonify({'success': False, 'error': 'Missing required fields'})
+
+    # Check if verification code is valid
+    reset_db = client.get_database("ai_platform").get_collection("password_resets")
+    reset_data = reset_db.find_one({
+        'email': email,
+        'verification_code': verification_code,
+        'expires_at': {'$gt': datetime.utcnow()}  # Code must not be expired
+    })
+    
+    if not reset_data:
+        return jsonify({'success': False, 'error': 'Invalid or expired verification code'})
+    
+    return jsonify({'success': True})
+
+@app.route('/reset_password', methods=['POST'])
+def reset_password():
+    if request.method != 'POST':
+        return jsonify({'success': False, 'error': 'Invalid request method'})
+
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+    verification_code = data.get('verification_code')
+
+    # Validate inputs
+    if not email or not password or not verification_code:
+        return jsonify({'success': False, 'error': 'Missing required fields'})
+
+    # Verify the code again
+    reset_db = client.get_database("ai_platform").get_collection("password_resets")
+    reset_data = reset_db.find_one({
+        'email': email,
+        'verification_code': verification_code,
+        'expires_at': {'$gt': datetime.utcnow()}  # Code must not be expired
+    })
+    
+    if not reset_data:
+        return jsonify({'success': False, 'error': 'Invalid or expired verification code'})
+    
+    # Password security validation
+    if len(password) < 8:
+        return jsonify({'success': False, 'error': 'Password must be at least 8 characters long'})
+    
+    # Check if password contains both letters and numbers
+    if not (any(c.isalpha() for c in password) and any(c.isdigit() for c in password)):
+        return jsonify({'success': False, 'error': 'Password must contain both letters and numbers'})
+    
+    # Check if password contains at least one uppercase letter
+    if not any(c.isupper() for c in password):
+        return jsonify({'success': False, 'error': 'Password must contain at least one uppercase letter'})
+    
+    # Hash the new password
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    # Update user's password
+    users = client.get_database("ai_platform").get_collection("login")
+    update_result = users.update_one(
+        {'email': email},
+        {'$set': {'password': hashed_password}}
+    )
+    
+    # Remove the reset record
+    reset_db.delete_one({'email': email})
+    
+    if update_result.matched_count > 0:
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'error': 'Failed to update password'})
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

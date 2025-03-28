@@ -1,143 +1,163 @@
-// Toggle password visibility
-function togglePasswordVisibility() {
-  const passwordInput = document.getElementById('password');
-  const icon = document.getElementById('togglePassword');
-
-  if (passwordInput.type === 'password') {
-    passwordInput.type = 'text';
-    icon.classList.remove('fa-eye-slash');
-    icon.classList.add('fa-eye');
-  } else {
-    passwordInput.type = 'password';
-    icon.classList.remove('fa-eye');
-    icon.classList.add('fa-eye-slash');
-  }
-}
-
-function toggleConfirmPasswordVisibility() {
-  const passwordInput = document.getElementById('confirm_password');
-  const icon = document.getElementById('toggleConfirmPassword');
-
-  if (passwordInput.type === 'password') {
-    passwordInput.type = 'text';
-    icon.classList.remove('fa-eye-slash');
-    icon.classList.add('fa-eye');
-  } else {
-    passwordInput.type = 'password';
-    icon.classList.remove('fa-eye');
-    icon.classList.add('fa-eye-slash');
-  }
-}
-
-// Password validation
 document.addEventListener('DOMContentLoaded', function () {
   const passwordInput = document.getElementById('password');
   const confirmPasswordInput = document.getElementById('confirm_password');
-  const registerForm = document.getElementById('registerForm');
-  const registerBtn = document.getElementById('registerBtn');
+  const lengthRequirement = document.getElementById('length-requirement');
+  const letterRequirement = document.getElementById('letter-requirement');
+  const numberRequirement = document.getElementById('number-requirement');
+  const uppercaseRequirement = document.getElementById('uppercase-requirement');
+  const matchRequirement = document.getElementById('match-requirement');
+  const sendVerificationBtn = document.getElementById('send-verification-btn');
+  const verificationSection = document.getElementById('verification-section');
+  const registerBtn = document.getElementById('register-btn');
 
-  // Requirements elements
-  const lengthReq = document.getElementById('length-requirement');
-  const letterReq = document.getElementById('letter-requirement');
-  const numberReq = document.getElementById('number-requirement');
-  const uppercaseReq = document.getElementById('uppercase-requirement');
-  const matchReq = document.getElementById('match-requirement');
-
-  // Function to validate password
-  function validatePassword() {
+  // Password validation functions
+  function checkPasswordRequirements() {
     const password = passwordInput.value;
     const confirmPassword = confirmPasswordInput.value;
 
     // Check length
     if (password.length >= 8) {
-      lengthReq.classList.add('valid');
-      lengthReq.classList.remove('invalid');
-      lengthReq.querySelector('i').classList.remove('fa-times-circle');
-      lengthReq.querySelector('i').classList.add('fa-check-circle');
+      lengthRequirement.querySelector('i').className = 'fas fa-check-circle';
+      lengthRequirement.style.color = 'green';
     } else {
-      lengthReq.classList.add('invalid');
-      lengthReq.classList.remove('valid');
-      lengthReq.querySelector('i').classList.remove('fa-check-circle');
-      lengthReq.querySelector('i').classList.add('fa-times-circle');
+      lengthRequirement.querySelector('i').className = 'fas fa-times-circle';
+      lengthRequirement.style.color = 'red';
     }
 
     // Check for letters
     if (/[a-zA-Z]/.test(password)) {
-      letterReq.classList.add('valid');
-      letterReq.classList.remove('invalid');
-      letterReq.querySelector('i').classList.remove('fa-times-circle');
-      letterReq.querySelector('i').classList.add('fa-check-circle');
+      letterRequirement.querySelector('i').className = 'fas fa-check-circle';
+      letterRequirement.style.color = 'green';
     } else {
-      letterReq.classList.add('invalid');
-      letterReq.classList.remove('valid');
-      letterReq.querySelector('i').classList.remove('fa-check-circle');
-      letterReq.querySelector('i').classList.add('fa-times-circle');
+      letterRequirement.querySelector('i').className = 'fas fa-times-circle';
+      letterRequirement.style.color = 'red';
     }
 
     // Check for numbers
-    if (/[0-9]/.test(password)) {
-      numberReq.classList.add('valid');
-      numberReq.classList.remove('invalid');
-      numberReq.querySelector('i').classList.remove('fa-times-circle');
-      numberReq.querySelector('i').classList.add('fa-check-circle');
+    if (/\d/.test(password)) {
+      numberRequirement.querySelector('i').className = 'fas fa-check-circle';
+      numberRequirement.style.color = 'green';
     } else {
-      numberReq.classList.add('invalid');
-      numberReq.classList.remove('valid');
-      numberReq.querySelector('i').classList.remove('fa-check-circle');
-      numberReq.querySelector('i').classList.add('fa-times-circle');
+      numberRequirement.querySelector('i').className = 'fas fa-times-circle';
+      numberRequirement.style.color = 'red';
     }
 
     // Check for uppercase
     if (/[A-Z]/.test(password)) {
-      uppercaseReq.classList.add('valid');
-      uppercaseReq.classList.remove('invalid');
-      uppercaseReq.querySelector('i').classList.remove('fa-times-circle');
-      uppercaseReq.querySelector('i').classList.add('fa-check-circle');
+      uppercaseRequirement.querySelector('i').className = 'fas fa-check-circle';
+      uppercaseRequirement.style.color = 'green';
     } else {
-      uppercaseReq.classList.add('invalid');
-      uppercaseReq.classList.remove('valid');
-      uppercaseReq.querySelector('i').classList.remove('fa-check-circle');
-      uppercaseReq.querySelector('i').classList.add('fa-times-circle');
+      uppercaseRequirement.querySelector('i').className = 'fas fa-times-circle';
+      uppercaseRequirement.style.color = 'red';
     }
 
     // Check if passwords match
-    if (password && confirmPassword && password === confirmPassword) {
-      matchReq.classList.add('valid');
-      matchReq.classList.remove('invalid');
-      matchReq.querySelector('i').classList.remove('fa-times-circle');
-      matchReq.querySelector('i').classList.add('fa-check-circle');
+    if (password === confirmPassword && password !== '') {
+      matchRequirement.querySelector('i').className = 'fas fa-check-circle';
+      matchRequirement.style.color = 'green';
     } else {
-      matchReq.classList.add('invalid');
-      matchReq.classList.remove('valid');
-      matchReq.querySelector('i').classList.remove('fa-check-circle');
-      matchReq.querySelector('i').classList.add('fa-times-circle');
-    }
-
-    // Check if all requirements are met
-    if (password.length >= 8 &&
-      /[a-zA-Z]/.test(password) &&
-      /[0-9]/.test(password) &&
-      /[A-Z]/.test(password) &&
-      password === confirmPassword &&
-      password &&
-      confirmPassword) {
-      registerBtn.classList.add('active');
-      return true;
-    } else {
-      registerBtn.classList.remove('active');
-      return false;
+      matchRequirement.querySelector('i').className = 'fas fa-times-circle';
+      matchRequirement.style.color = 'red';
     }
   }
 
-  // Add event listeners
-  passwordInput.addEventListener('input', validatePassword);
-  confirmPasswordInput.addEventListener('input', validatePassword);
+  passwordInput.addEventListener('keyup', checkPasswordRequirements);
+  confirmPasswordInput.addEventListener('keyup', checkPasswordRequirements);
 
-  // Form submission
-  registerForm.addEventListener('submit', function (event) {
-    if (!validatePassword()) {
-      event.preventDefault();
-      alert("Please ensure all password requirements are met.");
+  // Send verification code
+  sendVerificationBtn.addEventListener('click', function () {
+    const email = document.querySelector('input[name="email"]').value;
+    const username = document.querySelector('input[name="username"]').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+
+    // Basic form validation
+    if (!email || !username || !password || !confirmPassword) {
+      alert('Please fill in all fields');
+      return;
     }
+
+    // Email validation
+    if (!validateEmail(email)) {
+      alert('Please enter a valid email address');
+      return;
+    }
+
+    // Password validation
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    if (password.length < 8 || !/[a-zA-Z]/.test(password) ||
+      !/\d/.test(password) || !/[A-Z]/.test(password)) {
+      alert('Password does not meet all requirements');
+      return;
+    }
+
+    // Send the verification code request
+    fetch('/send_verification', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        username: username,
+        password: password
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Show verification code section
+          verificationSection.style.display = 'block';
+          sendVerificationBtn.style.display = 'none';
+          registerBtn.style.display = 'block';
+        } else {
+          alert(data.error || 'Failed to send verification code');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+      });
   });
+
+  // Email validation function
+  function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  }
 });
+
+function togglePasswordVisibility() {
+  const passwordInput = document.getElementById("password");
+  const toggleIcon = document.getElementById("togglePassword");
+  
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    toggleIcon.classList.remove("fa-eye-slash");
+    toggleIcon.classList.add("fa-eye");
+  } else {
+    passwordInput.type = "password";
+    toggleIcon.classList.remove("fa-eye");
+    toggleIcon.classList.add("fa-eye-slash");
+  }
+}
+
+// Function to toggle password visibility for the confirm password field
+function toggleConfirmPasswordVisibility() {
+  const confirmPasswordInput = document.getElementById("confirm_password");
+  const toggleIcon = document.getElementById("toggleConfirmPassword");
+  
+  if (confirmPasswordInput.type === "password") {
+    confirmPasswordInput.type = "text";
+    toggleIcon.classList.remove("fa-eye-slash");
+    toggleIcon.classList.add("fa-eye");
+  } else {
+    confirmPasswordInput.type = "password";
+    toggleIcon.classList.remove("fa-eye");
+    toggleIcon.classList.add("fa-eye-slash");
+  }
+}
