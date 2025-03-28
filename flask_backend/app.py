@@ -75,7 +75,7 @@ def send_login_code():
                 remaining_time = int((locked_until - datetime.utcnow()).total_seconds() / 60)
                 return jsonify({
                     'success': False, 
-                    'error': f'账户已被锁定，请在{remaining_time}分钟后再试'
+                    'error': f'password wrong，account already been locked，please retry after {remaining_time}min'
                 }), 403
             else:
                 # 锁定时间已过，重置登录尝试
@@ -87,7 +87,7 @@ def send_login_code():
         # 验证用户名和密码
         user = login_db.find_one({'username': username})
         if not user:
-            return jsonify({'success': False, 'error': '用户不存在'}), 400
+            return jsonify({'success': False, 'error': 'account don\'t exist'}), 400
             
         if not bcrypt.check_password_hash(user['password'], password):
             # 增加失败登录次数并可能锁定账户
@@ -100,11 +100,11 @@ def send_login_code():
                 remaining_time = int((updated_attempt['locked_until'] - datetime.utcnow()).total_seconds() / 60)
                 return jsonify({
                     'success': False, 
-                    'error': f'密码错误，账户已被锁定，请在{remaining_time}分钟后再试'
+                    'error': f'password wrong，account already been locked，please retry after {remaining_time}min'
                 }), 403
             else:
                 # 账户未锁定，返回普通密码错误信息
-                return jsonify({'success': False, 'error': '密码错误'}), 400
+                return jsonify({'success': False, 'error': 'password wrong'}), 400
         
         # 登录成功，重置失败次数
         update_login_attempts(username,login_attempts_db=login_attempts_db, success=True)
@@ -128,17 +128,17 @@ def send_login_code():
         # 发送验证码邮件
         email = user.get('email')
         if not email:
-            return jsonify({'success': False, 'error': '用户没有关联的邮箱地址'}), 400
+            return jsonify({'success': False, 'error': 'User does not have an associated email address'}), 400
             
-        # 使用用户名作为姓名发送邮件
+        # Use the username as the name to send the email
         if send_verification_email(email, verification_code, username):
             return jsonify({'success': True})
         else:
-            return jsonify({'success': False, 'error': '发送邮件失败，请稍后再试'}), 500
+            return jsonify({'success': False, 'error': 'Failed to send email, please try again later'}), 500
             
     except Exception as e:
         print(f"Error in send_login_code: {str(e)}")
-        return jsonify({'success': False, 'error': '服务器错误'}), 500
+        return jsonify({'success': False, 'error': 'Server error'}), 500
 
 # 修改登录路由，增加验证码验证
 @app.route('/login', methods=['GET', 'POST'])
@@ -154,28 +154,28 @@ def login():
             locked_until = login_attempt.get('locked_until')
             if datetime.utcnow() < locked_until:
                 remaining_minutes = int((locked_until - datetime.utcnow()).total_seconds() / 60)
-                return f"账户已被锁定，请在{remaining_minutes}分钟后再试 <a href='/login'>返回</a>"
+                return f"Account is locked. Please try again in {remaining_minutes} minutes. <a href='/login'>Return</a>"
         
         if not verification_code:
-            return "请输入验证码 <a href='/login'>返回</a>"
+            return "Please enter the verification code. <a href='/login'>Return</a>"
             
-        # 验证用户名和密码
+        # Validate username and password
         user = login_db.find_one({'username': username})
         if not user:
-            return "用户不存在 <a href='/login'>返回</a>"
+            return "User does not exist. <a href='/login'>Return</a>"
             
         if not bcrypt.check_password_hash(user['password'], password):
-            return "密码错误 <a href='/login'>返回</a>"
+            return "Incorrect password. <a href='/login'>Return</a>"
             
-        # 验证验证码
+        # Validate verification code
         verification = login_verification_db.find_one({
             'username': username,
             'verification_code': verification_code,
-            'expires_at': {'$gt': datetime.utcnow()}  # 验证码未过期
+            'expires_at': {'$gt': datetime.utcnow()}  # Verification code must not be expired
         })
         
         if not verification:
-            return "验证码无效或已过期 <a href='/login'>返回</a>"
+            return "Invalid or expired verification code. <a href='/login'>Return</a>"
         
         # 验证通过，重置失败次数
         update_login_attempts(username, login_attempts_db=login_attempts_db,success=True)
@@ -199,11 +199,11 @@ def login():
 
 @app.route('/login/github/authorized')
 def github_authorized_callback():
-    print(f"GitHub 授权状态: {github.authorized}")
+    print(f"GitHub authorization status: {github.authorized}")
     if github.authorized:
-        print("用户已授权，重定向到 /secured")
+        print("User is authorized, redirecting to /secured")
         return redirect('/secured')
-    print("用户未授权，重定向到 /login")
+    print("User is not authorized, redirecting to /login")
     return redirect('/login')
 
 @app.route("/github")
@@ -213,7 +213,7 @@ def github_login():
     res = github.get("/user")
     if res.status_code == 401:
         # 令牌失效，强制重新授权
-        print("令牌已失效，重新授权")
+        print("Token has expired, reauthorizing")
         session.clear()  # 清除会话数据
         return redirect(url_for("github.login"))  # 重定向回 GitHub 登录
 
