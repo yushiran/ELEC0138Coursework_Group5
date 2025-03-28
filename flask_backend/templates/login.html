@@ -1246,17 +1246,29 @@
         <form action="/login" method="POST">
             <div class="input-icon">
                 <i class="fas fa-user"></i>
-                <input type="text" name="username" placeholder="Username" required>
+                <input type="text" name="username" id="username" placeholder="Username" required>
             </div>
             <div class="input-icon">
                 <i class="fas fa-lock lock-icon"></i>
-                <input id="password" type="password" name="password" placeholder="Password" required>
+                <input type="password" name="password" id="password" placeholder="Password" required>
                 <i class="fas fa-eye-slash eye-icon" id="togglePassword" onclick="togglePasswordVisibility()"></i>
             </div>
+            <!-- Verification Code Section - Initially Hidden -->
+            <div id="verification-section" style="display: none;">
+                <div class="input-icon">
+                    <i class="fas fa-key"></i>
+                    <input type="text" name="verification_code" id="verification_code" placeholder="Verification Code">
+                </div>
+                <p class="verification-msg">The verification code has been sent to your email and is valid for 10 minutes.</p>
+            </div>
 
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <button type="submit" style="flex: 1;"><i class="fas fa-user-plus"></i> Login</button>
-
+            <div id="login-buttons" style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
+                <button type="button" id="send-code-btn" class="btn-primary">
+                    <i class="fas fa-paper-plane"></i> Get Verification Code
+                </button>
+                <button type="submit" id="login-btn" style="display: none;">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
                 <a href="{{ url_for('github_login') }}" class="btn btn-github">
                     <i class="fab fa-github"></i>
                 </a>
@@ -1284,6 +1296,28 @@
 
                 .btn-github i {
                     font-size: 20px;
+                }
+
+                /* 添加消息提示样式 */
+                #message-container {
+                    margin-top: 15px;
+                }
+
+                .message {
+                    padding: 10px;
+                    border-radius: 4px;
+                    margin-bottom: 10px;
+                    text-align: center;
+                }
+
+                .message.error {
+                    background-color: #f8d7da;
+                    color: #721c24;
+                }
+
+                .message.success {
+                    background-color: #d4edda;
+                    color: #155724;
                 }
             </style>
         </form>
