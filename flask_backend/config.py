@@ -13,7 +13,7 @@ class Config:
         self.MONGO_URI = os.getenv('MONGO_URI')
         # self.GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
         # self.GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
-        self.REDIRECT_URI = os.getenv('REDIRECT_URI')
+        # self.REDIRECT_URI = os.getenv('REDIRECT_URI')
 
         self.GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
         self.GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
@@ -22,5 +22,14 @@ class Config:
         self.GITHUB_USER_ENDPOINT = "https://api.github.com/user"
 
         self.OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+        # Email settings
+        self.EMAIL_HOST = "smtp.gmail.com"  # Use your email provider's SMTP server
+        self.EMAIL_PORT = 587
+        # self.EMAIL_PORT = 465
+        self.EMAIL_USE_TLS = True
+        self.EMAIL_USERNAME = os.getenv("EMAIL_USERNAME")
+        self.EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+        self.EMAIL_FROM = os.getenv("EMAIL_FROM")
 
 project_config = Config()

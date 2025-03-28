@@ -136,3 +136,20 @@ svg {
     margin-right: 5px;
   }
   
+
+  /* Add this to your existing login.css */
+
+.forgot-password {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.forgot-password a {
+    color: #4a6ee0;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}

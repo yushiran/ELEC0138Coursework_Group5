@@ -1256,7 +1256,7 @@
 
             <div style="display: flex; gap: 10px; align-items: center;">
                 <button type="submit" style="flex: 1;"><i class="fas fa-user-plus"></i> Login</button>
-                
+
                 <a href="{{ url_for('github_login') }}" class="btn btn-github">
                     <i class="fab fa-github"></i>
                 </a>
@@ -1287,7 +1287,12 @@
                 }
             </style>
         </form>
+
+        <div class="forgot-password">
+            <a href="/forgot_password">Forgot Password?</a>
+        </div>
         <p>Don't have an account? <a href="/register">Register</a></p>
+
     </div>
     <script src="{{ url_for('static', filename='login.js') }}"></script>
 </body>

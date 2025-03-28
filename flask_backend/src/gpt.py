@@ -1,5 +1,8 @@
 import openai
 import os
+import markdown
+import html
+from bs4 import BeautifulSoup
 from config import project_config
 
 openai.api_key = project_config.OPENAI_API_KEY
@@ -37,11 +40,14 @@ def get_gpt_response(user_message, chat_history, model="gpt-4"):
             model=model,
             messages=messages,
             temperature=0.7,
-            max_tokens=500
+            max_tokens=6000
         )
+
+        # 获取响应内容
+        response_content = response.choices[0].message.content
         
-        # 返回助手的回复
-        return response.choices[0].message.content
+        # 返回处理后的助手回复
+        return response_content
         
     except Exception as e:
         print(f"Error calling OpenAI API: {str(e)}")
