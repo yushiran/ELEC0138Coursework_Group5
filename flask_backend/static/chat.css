@@ -422,3 +422,103 @@ body {
 .file-attachment a:hover {
     text-decoration: underline;
 }
+
+/* Markdown 样式 */
+.message.assistant {
+    /* 现有的样式 */
+}
+
+/* 段落间距 */
+.message.assistant p {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+/* 标题样式 */
+.message.assistant h1, 
+.message.assistant h2, 
+.message.assistant h3, 
+.message.assistant h4, 
+.message.assistant h5, 
+.message.assistant h6 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+/* 代码块样式 */
+.message.assistant pre {
+    background-color: #f6f8fa;
+    border-radius: 6px;
+    padding: 16px;
+    overflow: auto;
+    margin-bottom: 16px;
+}
+
+.message.assistant code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.9em;
+    background-color: rgba(27, 31, 35, 0.05);
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+.message.assistant pre code {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+}
+
+/* 引用块样式 */
+.message.assistant blockquote {
+    border-left: 4px solid #dfe2e5;
+    padding-left: 16px;
+    margin-left: 0;
+    color: #6a737d;
+}
+
+/* 列表样式 */
+.message.assistant ul, 
+.message.assistant ol {
+    margin-bottom: 16px;
+    padding-left: 2em;
+}
+
+/* 表格样式 */
+.message.assistant table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.message.assistant table th,
+.message.assistant table td {
+    padding: 6px 13px;
+    border: 1px solid #dfe2e5;
+}
+
+.message.assistant table tr {
+    background-color: #fff;
+    border-top: 1px solid #c6cbd1;
+}
+
+.message.assistant table tr:nth-child(2n) {
+    background-color: #f6f8fa;
+}
+
+/* 链接样式 */
+.message.assistant a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+.message.assistant a:hover {
+    text-decoration: underline;
+}
+
+/* 图片样式 */
+.message.assistant img {
+    max-width: 100%;
+    height: auto;
+}

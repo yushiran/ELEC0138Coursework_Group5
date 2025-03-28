@@ -40,35 +40,15 @@ def get_gpt_response(user_message, chat_history, model="gpt-4"):
             model=model,
             messages=messages,
             temperature=0.7,
-            max_tokens=500
+            max_tokens=6000
         )
+
+        # 获取响应内容
+        response_content = response.choices[0].message.content
         
-        # 返回助手的回复
-        return response.choices[0].message.content
+        # 返回处理后的助手回复
+        return response_content
         
     except Exception as e:
         print(f"Error calling OpenAI API: {str(e)}")
         raise Exception(f"Error communicating with OpenAI API: {str(e)}")
-    
-def process_markdown(markdown_text):
-    """
-    将 Markdown 文本转换为 HTML。
-    
-    :param markdown_text: Markdown 格式的文本
-    :return: 转换后的 HTML 文本
-    """
-    # 将 Markdown 转换为 HTML
-    html_content = markdown.markdown(
-        markdown_text,
-        extensions=[
-            'markdown.extensions.fenced_code',
-            'markdown.extensions.tables',
-            'markdown.extensions.nl2br'
-        ]
-    )
-    
-    # 清理和格式化 HTML
-    soup = BeautifulSoup(html_content, 'html.parser')
-    
-    # 返回处理后的 HTML
-    return str(soup)

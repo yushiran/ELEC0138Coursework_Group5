@@ -20,6 +20,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentModel = 'gpt-4'; // 默认模型
     let currentFile = null;
 
+    // 配置 marked 和 highlight.js
+    marked.setOptions({
+        highlight: function(code, lang) {
+            try {
+                if (lang && hljs.getLanguage(lang)) {
+                    return hljs.highlight(code, { language: lang }).value;
+                } else {
+                    return hljs.highlightAuto(code).value;
+                }
+            } catch (e) {
+                console.error("Highlight error:", e);
+                return code; // 出错时返回原始代码
+            }
+        },
+        langPrefix: 'hljs language-',
+        gfm: true,
+        breaks: true,
+        smartypants: true,
+        xhtml: false,
+        sanitize: false
+    });
+
     // 文件上传处理
     fileUpload.addEventListener('change', function () {
         if (this.files.length > 0) {
@@ -185,7 +207,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             currentChatMessages.forEach((message, index) => {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message ${message.role}`;
-                messageDiv.textContent = message.content;
+
+                if (message.role === 'assistant') {
+                    // 使用 marked 解析 Markdown
+                    messageDiv.innerHTML = marked.parse(message.content);
+                    // 应用代码高亮
+                    messageDiv.querySelectorAll('pre code').forEach((block) => {
+                        hljs.highlightElement(block);
+                    });
+                } else {
+                    // 用户消息保持纯文本
+                    messageDiv.textContent = message.content;
+                }
 
                 // 如果消息包含文件，添加文件下载链接
                 if (message.file) {
@@ -280,81 +313,90 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function sendMessage() {
         const userMessage = userMessageInput.value.trim();
         if (!userMessage && !currentFile) return;  // 需要至少有消息或文件
-        
+
         // 显示用户消息
         const userMessageDiv = document.createElement('div');
         userMessageDiv.className = 'message user';
         userMessageDiv.textContent = userMessage;
         chatHistoryDiv.appendChild(userMessageDiv);
-        
+
         // 清空输入框
         userMessageInput.value = '';
-        
+
         // 滚动到底部
         chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
-        
+
         try {
             let formData = new FormData();
             formData.append('message', userMessage);
             formData.append('chat_id', currentChatId || '');
             formData.append('model', currentModel);
-            
+
             // 如果有文件，添加到请求中
             if (currentFile) {
                 formData.append('file', currentFile);
-                
+
                 // 显示文件上传提示
                 const fileUploadDiv = document.createElement('div');
                 fileUploadDiv.className = 'message system';
                 fileUploadDiv.textContent = `Uploading file: ${currentFile.name}`;
                 chatHistoryDiv.appendChild(fileUploadDiv);
             }
-            
+
             const response = await fetch('/chat', {
                 method: 'POST',
                 body: formData
             });
-            
+
             if (!response.ok) {
                 throw new Error('Failed to send message');
             }
-            
+
             const data = await response.json();
-            
+
             // 更新当前聊天ID（如果是新创建的聊天）
             if (data.chat_id) {
                 currentChatId = data.chat_id;
             }
-            
+
             // 显示助手回复
             const assistantMessageDiv = document.createElement('div');
             assistantMessageDiv.className = 'message assistant';
             assistantMessageDiv.textContent = data.message;
-            chatHistoryDiv.appendChild(assistantMessageDiv);
+
+            // 使用 marked 解析 Markdown，而不是直接设置文本内容
+            assistantMessageDiv.innerHTML = marked.parse(data.message);
             
+            // 应用代码高亮
+            assistantMessageDiv.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+
+            chatHistoryDiv.appendChild(assistantMessageDiv);
+
             // 更新当前聊天消息
             currentChatMessages.push(
                 { role: 'user', content: userMessage },
                 { role: 'assistant', content: data.message }
             );
-            
+
             // 清空文件选择
             clearFileSelection();
-            
+
             // 滚动到底部
             chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
-            
+
             // 刷新聊天历史列表
             await loadChatHistory();
         } catch (error) {
             console.error('Error sending message:', error);
-            
+
             // 显示错误消息
             const errorDiv = document.createElement('div');
             errorDiv.className = 'message system';
-            errorDiv.textContent = 'Error: Failed to get response';
+        errorDiv.textContent = `Error: ${error.message || 'Failed to get response'}`;
             chatHistoryDiv.appendChild(errorDiv);
-            
+
             // 清空文件选择
             clearFileSelection();
         }
