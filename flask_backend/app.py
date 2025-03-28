@@ -12,6 +12,8 @@ from bson.binary import Binary
 import io
 import secrets
 
+from model.model import predict
+
 from config import *
 
 from src.github_log import github_blueprint
@@ -365,6 +367,14 @@ def chat():
     
     if not user_message and not 'file' in request.files:
         return jsonify({'error': 'Message or file is required'}), 400
+    
+    # Detecting toxic messages using trained model
+    is_toxic = predict(user_message)
+    
+    if is_toxic == 1:
+        return jsonify({
+            "message": "Your language may be offensive. Please be respectful!"
+        })
 
     try:
         # 查找或创建聊天记录来获取历史消息
