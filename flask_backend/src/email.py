@@ -19,14 +19,14 @@ def send_verification_email(email, verification_code, first_name):
         msg = MIMEMultipart()
         msg["From"] = project_config.EMAIL_FROM
         msg["To"] = email
-        msg["Subject"] = "Your Verification Code for Registration"
+        msg["Subject"] = "Your Verification Code for ai_platform"
 
         # Create a simpler plain text body without HTML formatting
         plain_body = f"""Hello {first_name},
 
-Thank you for registering with our AI Platform. Your verification code is: {verification_code}
+Thank you for using with our AI Platform. Your verification code is: {verification_code}
 
-Please enter this code on the registration page to complete your account setup.
+Please enter this code to complete your account setup.
 This code will expire in 10 minutes.
 
 Best regards,

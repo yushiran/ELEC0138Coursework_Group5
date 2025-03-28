@@ -5,14 +5,12 @@ from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
 from flask_dance.contrib.github import github
 import os
-import openai 
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 import json
 from bson.binary import Binary
-import PyPDF2
-import docx
 import io
+import secrets
 
 from config import *
 
@@ -57,29 +55,99 @@ except Exception as e:
 def index():
     return redirect('/login')
 
+# 添加验证码发送路由
+@app.route('/send_login_code', methods=['POST'])
+def send_login_code():
+    try:
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        
+        # 验证用户名和密码
+        user = login_db.find_one({'username': username})
+        if not user:
+            return jsonify({'success': False, 'error': '用户不存在'}), 400
+            
+        if not bcrypt.check_password_hash(user['password'], password):
+            return jsonify({'success': False, 'error': '密码错误'}), 400
+        
+        # 生成验证码
+        verification_code = generate_verification_code()
+        
+        # 保存验证码到数据库，设置10分钟有效期
+        expiration_time = datetime.utcnow() + timedelta(minutes=10)
+        
+        # 创建或更新验证码记录
+        login_verification_db = client.get_database("ai_platform").get_collection("login_verifications")
+        login_verification_db.update_one(
+            {'username': username},
+            {'$set': {
+                'verification_code': verification_code,
+                'expires_at': expiration_time
+            }},
+            upsert=True
+        )
+        
+        # 发送验证码邮件
+        email = user.get('email')
+        if not email:
+            return jsonify({'success': False, 'error': '用户没有关联的邮箱地址'}), 400
+            
+        # 使用用户名作为姓名发送邮件
+        if send_verification_email(email, verification_code, username):
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': '发送邮件失败，请稍后再试'}), 500
+            
+    except Exception as e:
+        print(f"Error in send_login_code: {str(e)}")
+        return jsonify({'success': False, 'error': '服务器错误'}), 500
+
+# 修改登录路由，增加验证码验证
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username_or_email = request.form['username']  # Form field keeps the name 'username' for compatibility
-        password = request.form['password']
-
-        # Try to find user by username first
-        user_data = login_db.find_one({'username': username_or_email})
+        username = request.form.get('username')
+        password = request.form.get('password')
+        verification_code = request.form.get('verification_code')
         
-        # If not found by username, try email
-        if not user_data:
-            user_data = login_db.find_one({'email': username_or_email})
-
-        if user_data and bcrypt.check_password_hash(user_data['password'], password):
-            # Store the actual username in the session (not email)
-            session['username'] = user_data['username']
+        if not verification_code:
+            return "请输入验证码 <a href='/login'>返回</a>"
             
-            login_sessions = login_sessions_db
-            login_sessions.insert_one({'username': user_data['username']})
+        # 验证用户名和密码
+        user = login_db.find_one({'username': username})
+        if not user:
+            return "用户不存在 <a href='/login'>返回</a>"
             
-            return redirect('/secured')
-        else:
-            return "Invalid username/email or password. <a href='/login'>Try again</a>"
+        if not bcrypt.check_password_hash(user['password'], password):
+            return "密码错误 <a href='/login'>返回</a>"
+            
+        # 验证验证码
+        login_verification_db = client.get_database("ai_platform").get_collection("login_verifications")
+        verification = login_verification_db.find_one({
+            'username': username,
+            'verification_code': verification_code,
+            'expires_at': {'$gt': datetime.utcnow()}  # 验证码未过期
+        })
+        
+        if not verification:
+            return "验证码无效或已过期 <a href='/login'>返回</a>"
+            
+        # 验证通过，删除验证记录
+        login_verification_db.delete_one({'username': username})
+        
+        # 设置用户会话
+        session['username'] = username
+        
+        # 记录登录会话
+        login_sessions_db.insert_one({
+            'username': username,
+            'login_time': datetime.utcnow()
+        })
+        
+        return redirect('/secured')
+        
+    # GET 请求返回登录页面
     return render_template('login.html')
 
 @app.route('/login/github/authorized')
