@@ -16,42 +16,42 @@ function togglePasswordVisibility() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  console.log("登录页面脚本已加载");
+  console.log("Login page script loaded");
 
-  // 获取DOM元素，添加null检查
+  // Get DOM elements and add null checks
   const sendCodeBtn = document.getElementById('send-code-btn');
   const loginBtn = document.getElementById('login-btn');
   const verificationSection = document.getElementById('verification-section');
   const usernameInput = document.getElementById('username');
   const passwordInput = document.getElementById('password');
 
-  // 检查DOM元素是否存在
-  if (!sendCodeBtn) console.error("找不到发送验证码按钮");
-  if (!loginBtn) console.error("找不到登录按钮");
-  if (!verificationSection) console.error("找不到验证码区域");
-  if (!usernameInput) console.error("找不到用户名输入框");
-  if (!passwordInput) console.error("找不到密码输入框");
+  // Check if DOM elements exist
+  if (!sendCodeBtn) console.error("Send code button not found");
+  if (!loginBtn) console.error("Login button not found");
+  if (!verificationSection) console.error("Verification section not found");
+  if (!usernameInput) console.error("Username input field not found");
+  if (!passwordInput) console.error("Password input field not found");
 
-  // 只有当所有必要元素都存在时才添加事件监听
+  // Add event listeners only if all necessary elements exist
   if (sendCodeBtn && usernameInput && passwordInput) {
     sendCodeBtn.addEventListener('click', function (e) {
-      console.log("发送验证码按钮被点击");
-      e.preventDefault(); // 阻止表单提交
+      console.log("Send code button clicked");
+      e.preventDefault(); // Prevent form submission
 
       const username = usernameInput.value;
       const password = passwordInput.value;
 
-      // 基本验证
+      // Basic validation
       if (!username || !password) {
-        showMessage('请填写用户名和密码', 'error');
+        showMessage('Please fill in both username and password', 'error');
         return;
       }
 
-      // 显示加载状态
+      // Show loading state
       sendCodeBtn.disabled = true;
-      sendCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 发送中...';
+      sendCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
-      // 发送请求获取验证码
+      // Send request to get verification code
       fetch('/send_login_code', {
         method: 'POST',
         headers: {
@@ -63,48 +63,48 @@ document.addEventListener('DOMContentLoaded', function () {
         }),
       })
         .then(response => {
-          // 保存状态码，以便后续处理特殊情况
+          // Save status code for handling special cases
           const status = response.status;
           return response.json().then(data => {
-            // 将状态码和数据一起返回
+            // Return both status code and data
             return { status, data };
           });
         })
         .then(({ status, data }) => {
           sendCodeBtn.disabled = false;
-          sendCodeBtn.innerHTML = '<i class="fas fa-paper-plane"></i> 获取验证码';
+          sendCodeBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Get Code';
 
           if (data.success) {
-            showMessage('验证码已发送到您的邮箱', 'success');
-            // 显示验证码输入区域和登录按钮
+            showMessage('Verification code has been sent to your email', 'success');
+            // Show verification input section and login button
             if (verificationSection && loginBtn) {
               verificationSection.style.display = 'block';
               sendCodeBtn.style.display = 'none';
               loginBtn.style.display = 'block';
             }
           } else {
-            // 检查是否是账户锁定的错误
+            // Check if the error is due to account lock
             if (status === 403) {
-              // 特殊显示锁定信息
+              // Display lock information specifically
               showMessage(data.error, 'warning');
-              // 可以禁用发送验证码按钮，直到锁定时间结束
+              // Optionally disable the send code button until the lock period ends
               sendCodeBtn.disabled = true;
               sendCodeBtn.classList.add('disabled');
             } else {
-              showMessage(data.error || '发送验证码失败', 'error');
+              showMessage(data.error || 'Failed to send verification code', 'error');
             }
           }
         })
         .catch(error => {
           console.error('Error:', error);
           sendCodeBtn.disabled = false;
-          sendCodeBtn.innerHTML = '<i class="fas fa-paper-plane"></i> 获取验证码';
-          showMessage('发生错误，请稍后重试', 'error');
+          sendCodeBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Get Code';
+          showMessage('An error occurred, please try again later', 'error');
         });
     });
   }
 
-  // 显示消息的函数
+  // Function to display messages
   function showMessage(message, type) {
     let messageContainer = document.getElementById('message-container');
 
@@ -122,6 +122,6 @@ document.addEventListener('DOMContentLoaded', function () {
     messageContainer.innerHTML = `<div class="message ${type}">${message}</div>`;
     setTimeout(() => {
       messageContainer.innerHTML = '';
-    }, 5000); // 5秒后消失
+    }, 5000); // Disappear after 5 seconds
   }
 });
