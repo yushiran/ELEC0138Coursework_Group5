@@ -37,6 +37,7 @@ try:
     login_db = client.get_database("ai_platform").get_collection("login")
     login_sessions_db = client.get_database("ai_platform").get_collection("login_sessions")
     chats_db = client.get_database("ai_platform").get_collection("chats")  # 新增聊天记录集合
+    login_verification_db = client.get_database("ai_platform").get_collection("login_verifications")
     verification_db = client.get_database("ai_platform").get_collection("verification_codes")
     login_attempts_db = client.get_database("ai_platform").get_collection("login_attempts")
 
@@ -115,7 +116,6 @@ def send_login_code():
         expiration_time = datetime.utcnow() + timedelta(minutes=10)
         
         # 创建或更新验证码记录
-        login_verification_db = client.get_database("ai_platform").get_collection("login_verifications")
         login_verification_db.update_one(
             {'username': username},
             {'$set': {
@@ -168,7 +168,6 @@ def login():
             return "密码错误 <a href='/login'>返回</a>"
             
         # 验证验证码
-        login_verification_db = verification_db
         verification = login_verification_db.find_one({
             'username': username,
             'verification_code': verification_code,
