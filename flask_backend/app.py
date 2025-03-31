@@ -27,8 +27,6 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = project_config.SECRET_KEY
 app.config['MONGO_URI'] = project_config.MONGO_URI
-# app.config['REDIRECT_URI'] = project_config.REDIRECT_URI
-
 app.register_blueprint(github_blueprint, url_prefix="/login")
 
 client = MongoClient(app.config['MONGO_URI'])
@@ -53,8 +51,6 @@ try:
         print("Initialized the login collection with default admin credentials.")
 except Exception as e:
     raise Exception("Unable to find the document due to the following error: ", e)
-
-
 
 @app.route('/')
 def index():
@@ -795,4 +791,4 @@ def reset_password():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', port=5000)

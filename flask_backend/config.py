@@ -32,4 +32,7 @@ class Config:
         self.EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
         self.EMAIL_FROM = os.getenv("EMAIL_FROM")
 
+        # Base path of the current project
+        self.BASE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
 project_config = Config()
