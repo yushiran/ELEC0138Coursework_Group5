@@ -88,3 +88,57 @@ python app.py
 - **AI**: OpenAI API (GPT models)  
 - **Frontend**: HTML, CSS, JavaScript  
 - **Authentication**: Flask-Bcrypt, OAuth  
+
+# Simultaed attack tools
+
+The initial version of the platform has many security vulnerabilities, against which we have designed some attack tools, including Brute Force Dictionary Attack and DDOS attack.
+
+## 1. Brute Force Dictionary Attack (brute_force.py)
+
+This tool performs a multithreaded brute-force dictionary attack on a login endpoint to test password or username strength.
+
+## Core Features:
+- Supports password or username cracking modes
+- Allows manual or automatic dictionary generation
+- Multi-threaded for speed
+- Detects login success based on HTTP 302 redirection
+- Interruptible with the Delete key
+
+## Usage Guide
+1. Launch the brute force attack
+```bash
+cd attack_simulation
+python brute_force.py
+```
+
+2. Specify the following the on-screen prompts:
+
+- Select cracking mode (pass or user)
+- Enter the known credential (username or password)
+- Provide target login URL (default: http://172.20.10.3:5000/login)
+- Provide or auto-generate a dictionary
+- Set the number of threads
+
+Results (if successful) are saved to success_log.txt.
+
+## 2. Multi-threaded DDoS Simulator (multi_ddos.py)
+
+This tool performs a configurable way to simulate Denial-of-Service attacks for stress testing purposes.
+
+## Supported Attack Modes:
+- http: HTTP GET flood
+- udp: UDP packet flood
+- syn: TCP SYN flood (requires root)
+- ipfrag: IP fragmentation flood (requires root)
+
+## Usage Guide
+1. Launch the ddos attack
+```bash
+cd attack_simulation
+python multi_ddos.py
+```
+
+2. Specify the following the on-screen prompts:
+
+- Attack type
+- Target IP/URL
