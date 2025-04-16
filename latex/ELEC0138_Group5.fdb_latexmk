@@ -1,9 +1,16 @@
 # Fdb version 3
-["xdvipdfmx"] 1744817839 "ELEC0138_Group5.xdv" "ELEC0138_Group5.pdf" "ELEC0138_Group5" 1744817842
-  "ELEC0138_Group5.xdv" 1744817839 131876 7d7951c99284a9f8967eb96913ec6d17 "xelatex"
+["bibtex ELEC0138_Group5"] 1744821191 "ELEC0138_Group5.aux" "ELEC0138_Group5.bbl" "ELEC0138_Group5" 1744821197
+  "./IEEEbib.bst" 1744811209 17903 9ff833f4bf67f47893e44ee17b52d211 ""
+  "ELEC0138_Group5.aux" 1744821191 4893 e9efbb7f0ef3f5e0dd6515fd04812412 "xelatex"
+  "refs.bib" 1744817832 368 9ce300b9d5d95800fda2acfa3026ea98 ""
+  (generated)
+  "ELEC0138_Group5.bbl"
+  "ELEC0138_Group5.blg"
+["xdvipdfmx"] 1744821191 "ELEC0138_Group5.xdv" "ELEC0138_Group5.pdf" "ELEC0138_Group5" 1744821197
+  "ELEC0138_Group5.xdv" 1744821191 184364 8fa1ae66ab62c385e259e04c81ee1d35 "xelatex"
   (generated)
   "ELEC0138_Group5.pdf"
-["xelatex"] 1744817839 "ELEC0138_Group5.tex" "ELEC0138_Group5.xdv" "ELEC0138_Group5" 1744817842
+["xelatex"] 1744821191 "ELEC0138_Group5.tex" "ELEC0138_Group5.xdv" "ELEC0138_Group5" 1744821197
   "/etc/texmf/web2c/texmf.cnf" 1743592675 475 c0e671620eb5563b2130f56340a5fde8 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
@@ -49,6 +56,7 @@
   "/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty" 1579038678 6078 f1cb470c9199e7110a27851508ed7a5c ""
   "/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty" 1603745920 51746 e89c4da670ba533e6ab38e045ce6d1d9 ""
   "/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty" 1603745920 67929 d50ae850e1d9604065e8337a75a41029 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/float/float.sty" 1137110151 6749 16d2656a1984957e674b149555f1ea1d ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg" 1465944070 1224 978390e9c2234eab29404bc21b268d1e ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics-def/xetex.def" 1616189247 15263 06bfc49e20bdfcb827e011063ecb4ae6 ""
   "/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty" 1622581934 18399 7e40f80366dffb22c0e7b70517db5cb4 ""
@@ -71,17 +79,25 @@
   "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
   "/var/lib/texmf/web2c/xetex/xelatex.fmt" 1743593354 3606611 62a073302f371eaada4e2cb87fef5131 ""
-  "ELEC0138_Group5.aux" 1744817839 3785 ee9bb3b2b534cb442619d0393b290eb7 "xelatex"
-  "ELEC0138_Group5.out" 1744817839 3237 fb2385d4a9e185a460a1992d5b3a35ed "xelatex"
-  "ELEC0138_Group5.tex" 1744817838 15719 0d2de6bab8d27f10645f4d4a76bf8c1c ""
-  "images/AI dialogue Information content.png" 1744816204 61521 2f604406fd62ad85249862a191320197 ""
-  "images/Brute force attack Python script demo.png" 1744817233 345412 2c66a1cbc65a98158170ff3f230ca3cd ""
-  "images/Capture Information.png" 1744815447 12503 80d9a5443bf64d5c9940c7931228d201 ""
-  "images/Demo Registration.png" 1744815095 157466 7629657b85d1f73e047c4d21be1d3df2 ""
-  "images/Information content.png" 1744816269 330099 f67bef93b25cf04d846c7963cbdd4cd9 ""
-  "images/Information of Cookie.png" 1744816362 602300 c305c85b8346cdc9a228b02655135ec0 ""
+  "ELEC0138_Group5.aux" 1744821191 4893 e9efbb7f0ef3f5e0dd6515fd04812412 "xelatex"
+  "ELEC0138_Group5.bbl" 1744821191 342 a29d7581db92a93fd78055f9cf519e24 "bibtex ELEC0138_Group5"
+  "ELEC0138_Group5.out" 1744821191 3241 a2c3e888390aaa886160c5ea9c872ee4 "xelatex"
+  "ELEC0138_Group5.tex" 1744821191 21690 e361ebf02e85a7b525fac09559db049e ""
+  "images/AI_dialogue_Information_content.png" 1744816204 61521 2f604406fd62ad85249862a191320197 ""
+  "images/Brute_force_attack_Python_script_demo.png" 1744817233 345412 2c66a1cbc65a98158170ff3f230ca3cd ""
+  "images/Capture_Information.png" 1744815447 12503 80d9a5443bf64d5c9940c7931228d201 ""
+  "images/Chat_interface_after_anti_pollution.png" 1744820908 137743 71b54334504c30c91a0e27dbba14bfd7 ""
+  "images/Database_information_after_anti_pollution.png" 1744820907 42987 8f59566bff5ddc68ae4e00f6210a7747 ""
+  "images/Demo_Registration.png" 1744815095 157466 7629657b85d1f73e047c4d21be1d3df2 ""
+  "images/Information_content.png" 1744816269 330099 f67bef93b25cf04d846c7963cbdd4cd9 ""
+  "images/Information_of_Cookie.png" 1744816362 602300 c305c85b8346cdc9a228b02655135ec0 ""
+  "images/Partially_encrypted_information.png" 1744820554 36795 3259283f1130ad2572ccd608908269c9 ""
+  "images/cookie_content.png" 1744818772 14555 bef89f7aea834b0cbf59ecba742c36c7 ""
+  "images/email_authentication_login_screen.png" 1744820217 538111 59c5a987000514cb0bad04958b2dfbb7 ""
+  "images/email_authentication_register_screen.png" 1744820428 696056 414e163d2fc41b43cb5affc64ec38b28 ""
   "images/login_screenshot.png" 1744813741 909479 378eed8777831439661fc919d6b3e647 ""
   "images/registration_screenshot.png" 1744813893 1188781 0de211f9c6217b46c717889803a797dd ""
+  "images/user_interface.png" 1744818861 38486 d71869d086f92648c8c9682deff4a973 ""
   "spconf.sty" 1744811209 8798 121ab5e33850ab4cf48fc2795d92b250 ""
   (generated)
   "ELEC0138_Group5.aux"

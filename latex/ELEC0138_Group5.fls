@@ -467,6 +467,17 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/float/float.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
 INPUT /usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
 INPUT /usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
@@ -556,24 +567,49 @@ INPUT ./images/registration_screenshot.png
 INPUT ./images/registration_screenshot.png
 INPUT images/registration_screenshot.png
 OUTPUT ELEC0138_Group5.xdv
-INPUT ./images/Demo Registration.png
-INPUT ./images/Demo Registration.png
-INPUT images/Demo Registration.png
-INPUT ./images/Capture Information.png
-INPUT ./images/Capture Information.png
-INPUT images/Capture Information.png
-INPUT ./images/Information content.png
-INPUT ./images/Information content.png
-INPUT images/Information content.png
-INPUT ./images/AI dialogue Information content.png
-INPUT ./images/AI dialogue Information content.png
-INPUT images/AI dialogue Information content.png
-INPUT ./images/Information of Cookie.png
-INPUT ./images/Information of Cookie.png
-INPUT images/Information of Cookie.png
-INPUT ./images/Brute force attack Python script demo.png
-INPUT ./images/Brute force attack Python script demo.png
-INPUT images/Brute force attack Python script demo.png
+INPUT ./images/Demo_Registration.png
+INPUT ./images/Demo_Registration.png
+INPUT images/Demo_Registration.png
+INPUT ./images/Capture_Information.png
+INPUT ./images/Capture_Information.png
+INPUT images/Capture_Information.png
+INPUT ./images/Information_content.png
+INPUT ./images/Information_content.png
+INPUT images/Information_content.png
+INPUT ./images/AI_dialogue_Information_content.png
+INPUT ./images/AI_dialogue_Information_content.png
+INPUT images/AI_dialogue_Information_content.png
+INPUT ./images/Information_of_Cookie.png
+INPUT ./images/Information_of_Cookie.png
+INPUT images/Information_of_Cookie.png
+INPUT ./images/cookie_content.png
+INPUT ./images/cookie_content.png
+INPUT images/cookie_content.png
+INPUT ./images/user_interface.png
+INPUT ./images/user_interface.png
+INPUT images/user_interface.png
+INPUT ./images/Brute_force_attack_Python_script_demo.png
+INPUT ./images/Brute_force_attack_Python_script_demo.png
+INPUT images/Brute_force_attack_Python_script_demo.png
+INPUT ./images/email_authentication_login_screen.png
+INPUT ./images/email_authentication_login_screen.png
+INPUT images/email_authentication_login_screen.png
+INPUT ./images/email_authentication_register_screen.png
+INPUT ./images/email_authentication_register_screen.png
+INPUT images/email_authentication_register_screen.png
+INPUT ./images/Partially_encrypted_information.png
+INPUT ./images/Partially_encrypted_information.png
+INPUT images/Partially_encrypted_information.png
+INPUT ./images/Chat_interface_after_anti_pollution.png
+INPUT ./images/Chat_interface_after_anti_pollution.png
+INPUT images/Chat_interface_after_anti_pollution.png
+INPUT ./images/Database_information_after_anti_pollution.png
+INPUT ./images/Database_information_after_anti_pollution.png
+INPUT images/Database_information_after_anti_pollution.png
+INPUT ./ELEC0138_Group5.bbl
+INPUT ELEC0138_Group5.bbl
+INPUT ./ELEC0138_Group5.bbl
+INPUT ELEC0138_Group5.bbl
 INPUT ELEC0138_Group5.aux
 INPUT ./ELEC0138_Group5.out
 INPUT ./ELEC0138_Group5.out

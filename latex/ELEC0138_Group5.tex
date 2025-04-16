@@ -6,6 +6,8 @@
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{caption}
+\usepackage{float}
+
 
 % Title.
 % ------
@@ -107,7 +109,7 @@ We used the STRIDE threat classification model to classify and evaluate the thre
     
     \item T5 - $.env$ file leak (I + E)
     
-    Leaking $.env$ files can lead to information disclosure and privilege escalation, especially if $MONGO\_URI$ or $AES\_KEY$ is compromised. However, depending on the misconfiguration, this is less likely to happen in a controlled deployment.
+    Leaking $.env$ files can lead to information disclosure and privilege escalation, especially if MONGO\_URI or AES\_KEY is compromised. However, depending on the misconfiguration, this is less likely to happen in a controlled deployment.
     
 \end{itemize}
 
@@ -116,30 +118,29 @@ We used the STRIDE threat classification model to classify and evaluate the thre
 \subsubsection{Wireshark's HTTP message capture}
 We start with the registration information as an example as shown below. After registering the user information and clicking submit, we use Wireshark to add the filtered information header as shown in Figure X to the same network segment, which will show the record of all the requests submitted under that segment. 
 So after clicking on that record we can get the relevant user information in Figure \ref{fig:Demo Registration}.
-
-\begin{figure}[htb]
+\begin{figure}[H]
     \centering
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{images/Demo Registration.png}
+        \includegraphics[width=\textwidth]{images/Demo_Registration.png}
         \caption*{(a) Demo Registration}
     \end{minipage}
     \hfill
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{images/Capture Information.png}
+        \includegraphics[width=\textwidth]{images/Capture_Information.png}
         \caption*{(b) Capture Information}
     \end{minipage}
     \hfill
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{images/Information content.png}
+        \includegraphics[width=\textwidth]{images/Information_content.png}
         \caption*{(c) Information content}
     \end{minipage}
     \hfill
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{images/AI dialogue Information content.png}
+        \includegraphics[width=\textwidth]{images/AI_dialogue_Information_content.png}
         \caption*{(d) AI dialogue Information content}
     \end{minipage}
     
@@ -153,36 +154,34 @@ As shown in Fig. \ref{fig:cookie}, we have captured a login request in wireshark
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/Information of Cookie.png}
+    \includegraphics[width=0.5\textwidth]{images/Information_of_Cookie.png}
     \caption{Information of Cookie}
     \label{fig:cookie}
 \end{figure}
 
-After getting this cookie information, open the login screen and enter the information shown in Fig. \ref{} in the Console, we will see that the system has recognised the content of the cookie. 
+After getting this cookie information, open the login screen and enter the information shown in Fig. \ref{fig:cookie} in the Console, we will see that the system has recognised the content of the cookie. 
 So we enter the page we need to go to in the web port which is http://127.0.0.1:5000/secured and we can see that we have successfully jumped to the user interface.
-
-% \begin{figure}[htb]
-%     \begin{minipage}{0.5\textwidth}
-%         \centering
-%         \includegraphics[width=\textwidth]{images/}
-%         \caption*{(a) Session Hijacking}
-%     \end{minipage}
-%     \hfill
-%     \begin{minipage}
-%         \centering
-%         \includegraphics[width=\textwidth]{images/}
-%         \caption*{(b) Session Hijacking}
-%     \end{minipage}
-    
-%     \caption{Information of Cookie}
-%     \label{fig:cookie}
-% \end{figure}
+\begin{figure}[htb]
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/cookie_content.png}
+        \caption*{(a) Cookie content}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/user_interface.png}
+        \caption*{(b) User interface}
+    \end{minipage}
+    \caption{Information of Cookie}
+    \label{fig:cookie}
+\end{figure}
 
 Applications allow users to log in with a username and password. In the original design, there was no rate limiting or CAPTCHA mechanism and the login endpoint was vulnerable to brute force attacks. We simulated an attacker using a multi-threaded Python script to systematically guess numeric passwords for known usernames. The script also allows the attacker to customize the length of the password to reduce the complexity of cracking if the user's account information is obtained by other means, such as the approximate length of the password or account name, etc. The script also allows the attacker to customize the length of the password to reduce the complexity of cracking. Once the correct password is recognized, the script terminates and saves the stolen credentials. For demonstration purposes, plain numbers are used as passwords and plain letters are used as user id.
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/Brute force attack Python script demo.png}
+    \includegraphics[width=0.5\textwidth]{images/Brute_force_attack_Python_script_demo.png}
     \caption{Brute force attack Python script demo}
     \label{fig:brute_force_attack}
 \end{figure}
@@ -192,12 +191,80 @@ In addition, DDoS attacks are designed as decoys to cause confusion and create o
 
 
 
+% \vfill\pagebreak
 
 
 
-\section{Coursework 2: Security \& Privacy Defense Strategy (up to 5 pages)}
+
+\section{Coursework 2: Security \& Privacy Defense Strategy}
 \subsection{Security (or Privacy or both) Interaction/visualisation/actuation system}
+We propose a multi-layered, defense-in-depth architecture that integrates preventive, detective, and recovery mechanisms to mitigate the threats identified in our system.
+
+For access control and authentication, we enforce Multi-Factor Authentication (MFA) using TOTP or device-based tokens and adopt a zero-trust architecture where each access request is continuously verified rather than implicitly trusted. User credentials are stored using bcrypt hashing to prevent SQL injection and accidental leaks by developers who can access the database. The rate limiting is also implemented to prevent brute-force attempts.
+
+In terms of data security, all communication between client and server is secured via HTTPS, eliminating the risk of plain-text interception during login or session activity. Additionally, cookies are secured using flags such as HttpOnly, Secure, and SameSite=Strict to mitigate the risk of session hijacking through packet sniffing tools like Wireshark. To further ensure data integrity and legal compliance, we also implemented AI-driven content filtering that analyzes user input in real time. If violent, criminal, or otherwise illegal language is detected, the system will automatically block the content and prevent it from being written into the database. This preemptive measure helps us avoid storing unlawful data and enhances compliance with data protection regulations.
+
+For backend integrity, we performed input validation to mitigate NoSQL injection attacks, ensuring user inputs are sanitized before being processed in MongoDB queries. We also implemented basic session binding, where a session is invalidated if the IP address does not match the original login IP, providing an extra layer of protection against session hijack scenarios.
+
+These implementations significantly enhance the overall resilience of our system against practical threats such as interception, brute-force login, and injection-based exploits.
+
 \subsection{Threats inferences and insights}
+First, because Wireshark may try to capture sensitive information (e.g. usernames, passwords, chats, etc.) in clear text, we implemented TLS encrypted communication for our web application, upgrading it from the original HTTP protocol to HTTPS, and this section documents the whole process from certificate generation to the Flask project's access to TLS. 
+First, we generate a self-signed certificate and a private key locally using OpenSSL: cert.pem: server-side public key certificate and key.pem: private key. Then, in the Flask project, we enable TLS using the ssl\_context parameter, simply by specifying the path to cert.pem and key.pem at runtime. 
+With this encryption, even if an attacker uses Wireshark to capture packets on the same network, he will not be able to obtain valid sensitive information. 
+The data transmission process is changed from plaintext to encrypted stream, which significantly improves the security of user authentication, chat and other operations.
+
+Next, we add the authentication scheme in the main interface, that is, we add the email verification code as a double guarantee, to prevent hackers from breaking in violently. 
+To cooperate with the email authentication code function, we modify the specific requirements during registration, besides the simple username and password, we add the registration of additional email information. 
+The specific information is shown in the Fig. \ref{fig:email_verification} below.
+\begin{figure}[htb]
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/email_authentication_login_screen.png}
+        \caption*{(a) Email verification login page}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/email_authentication_register_screen.png}
+        \caption*{(b) Email verification registration page}
+    \end{minipage}
+    \caption{Email verification}
+    \label{fig:email_verification}
+\end{figure}
+
+At the same time we are registering information into the database, considering the use of the MongoDB database itself has a very strong privacy protection mechanism, so we do not consider for the time being the processing of this database. 
+But in this particular case, after grabbing the .env file, we also have the opportunity to enter the database through the URI. 
+Therefore, when we store the relevant information, as shown in the Fig. \ref{fig:hash} below, we encrypt the password with a hash algorithm, which can effectively protect the user's information even if it is illegally invaded.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/Partially_encrypted_information.png}
+    \caption{Partially encrypted information}
+    \label{fig:hash}
+\end{figure}
+
+Meanwhile, we added a machine learning mechanism to block sensitive words in the user chat interface to prevent them from entering the database and polluting the content. 
+As shown in the Fig. \ref{fig:pollution}, although we present four dialogues in the dialogue box, the AI system detects that some of the dialogues contain sensitive words and therefore initiates a warning. 
+And we can also clearly see in the database that the content stored in the database does not contain the sensitive content that was warned.
+
+\begin{figure}[H]
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/Chat_interface_after_anti_pollution.png}
+        \caption*{(a) Chat interface after anti-pollution}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/Database_information_after_anti_pollution.png}
+        \caption*{(b) Database information after anti-pollution}
+    \end{minipage}
+    \caption{AI dialogue system after anti-pollution}
+    \label{fig:pollution}
+\end{figure}
+
+
 \subsection{Regulation and Ethical considerations}
 \subsection{Scalability, Innovation \& Enterprise Considerations}
 
@@ -208,6 +275,6 @@ In addition, DDoS attacks are designed as decoys to cause confusion and create o
 % style file from IEEE produces unsorted bibliography list.
 % -------------------------------------------------------------------------
 \bibliographystyle{IEEEbib}
-% \bibliography{refs}
+\bibliography{refs}
 
 \end{document}

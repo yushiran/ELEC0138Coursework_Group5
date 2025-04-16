@@ -1,3 +1,10 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{Devlin2019BERTPO}
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova,
+\newblock ``Bert: Pre-training of deep bidirectional transformers for language
+  understanding,''
+\newblock in {\em North American Chapter of the Association for Computational
+  Linguistics}, 2019.
 
 \end{thebibliography}
