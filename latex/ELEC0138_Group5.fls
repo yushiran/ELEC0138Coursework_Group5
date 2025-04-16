@@ -444,6 +444,29 @@ INPUT /usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
 INPUT /usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
 INPUT /usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
@@ -501,16 +524,6 @@ INPUT /usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.st
 INPUT /usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
-INPUT ./ELEC0138_Group5.out
-INPUT ELEC0138_Group5.out
-INPUT ./ELEC0138_Group5.out
-INPUT ELEC0138_Group5.out
-INPUT ./ELEC0138_Group5.out
-INPUT ELEC0138_Group5.out
-INPUT ./ELEC0138_Group5.out
-INPUT ELEC0138_Group5.out
-INPUT ./ELEC0138_Group5.out
-INPUT ./ELEC0138_Group5.out
 OUTPUT ELEC0138_Group5.out
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
@@ -526,7 +539,28 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
+INPUT ./images/login_screenshot.png
+INPUT ./images/login_screenshot.png
+INPUT images/login_screenshot.png
+INPUT ./images/registration_screenshot.png
+INPUT ./images/registration_screenshot.png
+INPUT images/registration_screenshot.png
 OUTPUT ELEC0138_Group5.xdv
+INPUT ./images/Demo Registration.png
+INPUT ./images/Demo Registration.png
+INPUT images/Demo Registration.png
+INPUT ./images/Capture Information.png
+INPUT ./images/Capture Information.png
+INPUT images/Capture Information.png
+INPUT ./images/Information content.png
+INPUT ./images/Information content.png
+INPUT images/Information content.png
+INPUT ./images/AI dialogue Information content.png
+INPUT ./images/AI dialogue Information content.png
+INPUT images/AI dialogue Information content.png
+INPUT ./images/Information of Cookie.png
+INPUT ./images/Information of Cookie.png
+INPUT images/Information of Cookie.png
 INPUT ELEC0138_Group5.aux
 INPUT ./ELEC0138_Group5.out
 INPUT ./ELEC0138_Group5.out
