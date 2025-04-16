@@ -32,7 +32,7 @@
 \section{Coursework 1: Threat Modeling \& Attack Simulation}
 \subsection{Introduction and objectives}
 This project simulates a widely used AI dialogue model system developed using Flask (Python) and MongoDB, creating a user login, a registration interface and a LLM chat interface. The system stores the user account password and other related personal information in the MongoDB database, and the user's chat information is also stored in the associated database to protect and manage it. 
-At the same time, machine learning is used to load the LLM to identify and delete banned messages in the chat to prevent the database from being contaminated with banned messages.
+At the same time, machine learning is used to load the BERT model\cite{Devlin2019BERTPO} to identify and delete banned messages in the chat to prevent the database from being contaminated with banned messages.
 The system will include the following elements, which will be analysed:
 \begin{enumerate}
     \item Front-end HTML forms: login, registration, AI chat interface, etc.
@@ -161,22 +161,34 @@ As shown in Fig. \ref{fig:cookie}, we have captured a login request in wireshark
 After getting this cookie information, open the login screen and enter the information shown in Fig. \ref{} in the Console, we will see that the system has recognised the content of the cookie. 
 So we enter the page we need to go to in the web port which is http://127.0.0.1:5000/secured and we can see that we have successfully jumped to the user interface.
 
-\begin{figure}[htb]
-    \begin{minipage}{0.5\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{images/}
-        \caption*{(a) Session Hijacking}
-    \end{minipage}
-    \hfill
-    \begin{minipage}
-        \centering
-        \includegraphics[width=\textwidth]{images/}
-        \caption*{(b) Session Hijacking}
-    \end{minipage}
+% \begin{figure}[htb]
+%     \begin{minipage}{0.5\textwidth}
+%         \centering
+%         \includegraphics[width=\textwidth]{images/}
+%         \caption*{(a) Session Hijacking}
+%     \end{minipage}
+%     \hfill
+%     \begin{minipage}
+%         \centering
+%         \includegraphics[width=\textwidth]{images/}
+%         \caption*{(b) Session Hijacking}
+%     \end{minipage}
     
-    \caption{Information of Cookie}
-    \label{fig:cookie}
+%     \caption{Information of Cookie}
+%     \label{fig:cookie}
+% \end{figure}
+
+Applications allow users to log in with a username and password. In the original design, there was no rate limiting or CAPTCHA mechanism and the login endpoint was vulnerable to brute force attacks. We simulated an attacker using a multi-threaded Python script to systematically guess numeric passwords for known usernames. The script also allows the attacker to customize the length of the password to reduce the complexity of cracking if the user's account information is obtained by other means, such as the approximate length of the password or account name, etc. The script also allows the attacker to customize the length of the password to reduce the complexity of cracking. Once the correct password is recognized, the script terminates and saves the stolen credentials. For demonstration purposes, plain numbers are used as passwords and plain letters are used as user id.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/Brute force attack Python script demo.png}
+    \caption{Brute force attack Python script demo}
+    \label{fig:brute_force_attack}
 \end{figure}
+
+In addition, DDoS attacks are designed as decoys to cause confusion and create opportunities before executing attacks that actually threaten the security and privacy of user information. The initial Web services do not enforce any form of request limitation or IP blacklisting. An attacker can exhaust server resources by issuing a large number of seemingly legitimate HTTP GET requests. In the designed DDoS attack script, four types of attacks are included: HTTP Flood, UDP Flood, SYN Flood, and IP Fragment Flood.
+
 
 
 

@@ -524,6 +524,16 @@ INPUT /usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.st
 INPUT /usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+INPUT ./ELEC0138_Group5.out
+INPUT ELEC0138_Group5.out
+INPUT ./ELEC0138_Group5.out
+INPUT ELEC0138_Group5.out
+INPUT ./ELEC0138_Group5.out
+INPUT ELEC0138_Group5.out
+INPUT ./ELEC0138_Group5.out
+INPUT ELEC0138_Group5.out
+INPUT ./ELEC0138_Group5.out
+INPUT ./ELEC0138_Group5.out
 OUTPUT ELEC0138_Group5.out
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
@@ -561,6 +571,9 @@ INPUT images/AI dialogue Information content.png
 INPUT ./images/Information of Cookie.png
 INPUT ./images/Information of Cookie.png
 INPUT images/Information of Cookie.png
+INPUT ./images/Brute force attack Python script demo.png
+INPUT ./images/Brute force attack Python script demo.png
+INPUT images/Brute force attack Python script demo.png
 INPUT ELEC0138_Group5.aux
 INPUT ./ELEC0138_Group5.out
 INPUT ./ELEC0138_Group5.out
