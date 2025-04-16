@@ -121,6 +121,12 @@ python brute_force.py
 
 Results (if successful) are saved to success_log.txt.
 
+## Brute Force Attack Demo
+
+Below is a demonstration of the brute force attack script in action:
+
+![Brute Force Attack Demo](latex/images/Brute_force_attack_Python_script_demo.png)
+
 ## 2. Multi-threaded DDoS Simulator (multi_ddos.py)
 
 This tool performs a configurable way to simulate Denial-of-Service attacks for stress testing purposes.
@@ -142,3 +148,9 @@ python multi_ddos.py
 
 - Attack type
 - Target IP/URL
+
+## DDoS Attack Demo
+
+Below is a demonstration of the DDoS attack script in action:
+
+![DDoS Attack Demo](latex/images/ddos_result.png)
