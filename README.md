@@ -1,8 +1,15 @@
-# AI Chat Platform
+# ELEC0138 Assignment Group 5 
+## Resilient Security: Threat Modeling and Defensive Strategies for Large Language Models Platforms
 ![GitHub Repo stars](https://img.shields.io/github/stars/yushiran/ELEC0138Coursework_Group5?style=social)
 ![GitHub contributors](https://img.shields.io/github/contributors/yushiran/ELEC0138Coursework_Group5)
 ![GitHub last commit](https://img.shields.io/github/last-commit/yushiran/ELEC0138Coursework_Group5)
 
+[@yushiran](https://github.com/yushiran) [@t2m2n9](https://github.com/t2m2n9) [@yyyyzq](https://github.com/yyyyzq) [@ZHEZHEZHE020106](https://github.com/ZHEZHEZHE020106)
+
+# Abstract
+This project explores the security challenges and threat modeling of large language model (LLM) platforms. By analyzing potential vulnerabilities and implementing defensive strategies, we aim to enhance the resilience of AI-driven systems. The study includes the development of a Flask-based LLM platform, simulated attack tools for testing, and a comprehensive evaluation of security measures. Our findings provide insights into securing LLM platforms against real-world threats while maintaining usability and performance.
+
+# LLM platform Flask backend
 ## Features
 
 This is an AI chat platform built with Flask and the OpenAI API, offering the following features:
