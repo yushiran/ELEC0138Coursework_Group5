@@ -1,0 +1,54 @@
+%          spconf.sty  - ICASSP/ICIP LaTeX style file, and
+%          IEEEbib.bst - IEEE bibliography style file.
+% --------------------------------------------------------------------------
+\documentclass{article}
+\usepackage{spconf,amsmath,graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+% Title.
+% ------
+\title{Resilient Security: Threat Modeling and Defensive Strategies for Large Language Models Platforms}
+\name{SN: 24076607}
+\address{}
+%
+\begin{document}
+
+%
+\maketitle
+%
+\begin{abstract}
+    This paper presents a comprehensive approach to securing Large Language Model (LLM) platforms through threat modeling and the development of robust defensive strategies. We first conduct a detailed threat analysis of a Flask-based AI dialogue system that integrates user authentication, conversation management, and content moderation. Our threat model identifies and prioritizes various attack vectors including session hijacking, brute force attacks, NoSQL injection, and DDoS attempts, using the STRIDE methodology to assess potential impacts. Through practical attack simulations, we demonstrate how adversaries could extract sensitive information from unprotected systems.
+
+    The second part of our work proposes a multi-layered defense strategy incorporating preventive, detective, and recovery mechanisms. Our implementation includes secure authentication with MFA, bcrypt password hashing, rate limiting, and HTTPS encryption. We developed an AI-driven content filtering system that prevents storage of prohibited content, along with robust input validation and secure session management. The paper also addresses regulatory compliance with frameworks including GDPR, CRA, and PSTI, while considering ethical implications of AI-based security systems. Finally, we evaluate enterprise-level scaling considerations and innovative approaches such as contextual authentication and privacy-preserving AI techniques to ensure long-term viability of secure LLM platforms.
+    \footnote{The code is provided on GitHub: \url{https://github.com/yushiran/ELEC0138Coursework\_Group5}, and the presentation video is available at: \url{https://www.youtube.com/watch?v=0v1x2g4X8nE}.}
+\end{abstract}
+%
+\begin{keywords}
+    One, two, three, four, five
+\end{keywords}
+
+
+%
+
+\section{Coursework 1: Threat Modeling \& Attack Simulation}
+\subsection{Introduction and objectives}
+\subsection{Threat model}
+\subsection{Assess impact and prioritize threats}
+\subsection{Data Sources and attacks set-up}
+
+\section{Coursework 2: Security \& Privacy Defense Strategy (up to 5 pages)}
+\subsection{Security (or Privacy or both) Interaction/visualisation/actuation system}
+\subsection{Threats inferences and insights}
+\subsection{Regulation and Ethical considerations}
+\subsection{Scalability, Innovation \& Enterprise Considerations}
+
+\vfill\pagebreak
+
+% References should be produced using the bibtex program from suitable
+% BiBTeX files (here: strings, refs, manuals). The IEEEbib.bst bibliography
+% style file from IEEE produces unsorted bibliography list.
+% -------------------------------------------------------------------------
+\bibliographystyle{IEEEbib}
+% \bibliography{refs}
+
+\end{document}
