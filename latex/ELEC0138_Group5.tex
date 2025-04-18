@@ -208,14 +208,18 @@ For backend integrity, we performed input validation to mitigate NoSQL injection
 
 These implementations significantly enhance the overall resilience of our system against practical threats such as interception, brute-force login, and injection-based exploits.
 
-\subsection{Threats inferences and insights}
+\subsection{Prototype Implementation and Demonstration}
+This section illustrates the demonstration and implementation of the prototype we developed. This prototype demonstrates how real-world threats, such as plain text data transmission, unauthorized access, database breaches, and data pollution, can be mitigated using a layered security approach. The following subsections detail the practical setup and visual demonstration of these implementations, supported by code snippets, screenshots, and system behavior after applying each countermeasure.
+
+\subsubsection{Enable TLS Encryption to Prevent Data Leakage }
 First, because Wireshark may try to capture sensitive information (e.g. usernames, passwords, chats, etc.) in clear text, we implemented TLS encrypted communication for our web application, upgrading it from the original HTTP protocol to HTTPS, and this section documents the whole process from certificate generation to the Flask project's access to TLS. 
 First, we generate a self-signed certificate and a private key locally using OpenSSL: cert.pem: server-side public key certificate and key.pem: private key. Then, in the Flask project, we enable TLS using the ssl\_context parameter, simply by specifying the path to cert.pem and key.pem at runtime. 
-With this encryption, even if an attacker uses Wireshark to capture packets on the same network, he will not be able to obtain valid sensitive information. 
-The data transmission process is changed from plaintext to encrypted stream, which significantly improves the security of user authentication, chat and other operations.
+With this encryption, even if attackers use Wireshark to capture packets on the same network, they will not be able to obtain valid sensitive information. 
+The data transmission process is changed from plain text to an encrypted stream, which significantly improves the security of user authentication, chat, and other operations.
 
+\subsubsection{Add Email Verification Code as Double Authentication }
 Next, we add the authentication scheme in the main interface, that is, we add the email verification code as a double guarantee, to prevent hackers from breaking in violently. 
-To cooperate with the email authentication code function, we modify the specific requirements during registration, besides the simple username and password, we add the registration of additional email information. 
+To cooperate with the email authentication code function, we modify the specific requirements during registration. Besides the simple username and password, we add the registration of additional email information. 
 The specific information is shown in the Fig. \ref{fig:email_verification} below.
 \begin{figure}[htb]
     \begin{minipage}{0.5\textwidth}
@@ -226,25 +230,51 @@ The specific information is shown in the Fig. \ref{fig:email_verification} below
     \hfill
     \begin{minipage}{0.5\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{images/email_authentication_register_screen.png}
+ \includegraphics[width=\textwidth]{images/email_authentication_register_screen.png}
         \caption*{(b) Email verification registration page}
     \end{minipage}
     \caption{Email verification}
     \label{fig:email_verification}
 \end{figure}
 
+\subsubsection{Encrypt Sensitive Information in the Database }
 At the same time we are registering information into the database, considering the use of the MongoDB database itself has a very strong privacy protection mechanism, so we do not consider for the time being the processing of this database. 
 But in this particular case, after grabbing the .env file, we also have the opportunity to enter the database through the URI. 
 Therefore, when we store the relevant information, as shown in the Fig. \ref{fig:hash} below, we encrypt the password with a hash algorithm, which can effectively protect the user's information even if it is illegally invaded.
-
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.5\textwidth]{images/Partially_encrypted_information.png}
     \caption{Partially encrypted information}
     \label{fig:hash}
 \end{figure}
+\subsubsection{AI-based Mechanism to Prevent Sensitive Data Pollution }
+To implement an effective mechanism for detecting and filtering sensitive or toxic user input to prevent them from entering the database and polluting the content, we developed a lightweight text classification model capable of distinguishing between safe and harmful content. The model was trained using a labeled dataset containing example sentences that were manually categorized as either benign or containing inappropriate language, such as violent, abusive, or otherwise prohibited expressions. 
 
-Meanwhile, we added a machine learning mechanism to block sensitive words in the user chat interface to prevent them from entering the database and polluting the content. 
+\subsubsection{Train Dataset}
+The train dataset is from the Toxic Comment Classification Challenge on Kaggle\footnote{https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/data?select=train.csv.zip}. The dataset consists of approximately 160,000 text samples, each annotated with six binary labels indicating different types of harmful content: toxic, severe\_toxic, obscene, threat, insult, and identity\_hate. Each label is represented as either 0 or 1, signifying the absence or presence of the respective trait in the text. To simplify the classification task into a binary setting, we consolidated these six labels into a single unified label. Specifically, if a sample is marked with a value of 1 in any of the six categories, we consider it harmful and assign it a final label of 1; otherwise, the label is 0. This preprocessing step allows the model to focus on general toxic language detection rather than distinguishing between different subtypes of harmful content, which is more suitable for our goal of preventing any sensitive or offensive text from entering the database. 
+
+\subsubsection{Model}
+The model used is a pre-trained Bert-base-uncase model\footnote{https://huggingface.co/google-bert/bert-base-uncased } \cite{devlin2018bert}. It consists of 12 transformer layers (also called encoder blocks), 768 hidden units per layer, and 12 attention heads, totaling approximately 110 million parameters. As a deep bidirectional model, it considers both left and right context in all layers, making it highly effective for capturing the meaning and nuances of natural language. By using this model as a feature extractor or fine-tuning it for binary classification, we are able to significantly improve the model’s ability to detect toxic and sensitive content.
+
+\subsubsection{Result}
+Due to the large size of the training dataset and the limitations of available computational resources, we limited the model training to 3 epochs. During training, the model parameters were updated using the Adam optimizer with weight decay, and binary cross-entropy was used as the loss function.  Table 1 shows the model performance over epochs. The model achieved over 96\% accuracy, with F1 scores remained stable, suggesting that the model had learned meaningful patterns without significant overfitting. 
+\begin{table}
+\centering
+\caption{Model performance over epochs}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Epoch} & \textbf{Training Loss} & \textbf{Accuracy} & \textbf{F1 Score} \\
+\hline
+1 & 0.182700 & 0.955500 & 0.820721 \\
+2 & 0.072100 & 0.960000 & 0.817352 \\
+3 & 0.021700 & 0.960500 & 0.819222 \\
+\hline
+\end{tabular}
+\label{tab:training_metrics}
+\end{table}
+
+After training, the model was uploaded to the Hugging Face Model Hub \footnote{https://huggingface.co/ZheZHEZHE020106/zt-harmful_language_detecting}, which allows the model to be directly loaded via the transformers library without any additional configuration. Finally, we integrated it into the Flask backend.
+
 As shown in the Fig. \ref{fig:pollution}, although we present four dialogues in the dialogue box, the AI system detects that some of the dialogues contain sensitive words and therefore initiates a warning. 
 And we can also clearly see in the database that the content stored in the database does not contain the sensitive content that was warned.
 
@@ -319,7 +349,7 @@ Several ethical challenges were identified and addressed:
 \textbf{AI-Driven Security Concerns:}
 
 \begin{itemize}
-    \item Created appeals process for content moderation decisions
+    \item Created an appeals process for content moderation decisions
     \item Regular auditing of toxicity detection models for bias
     \item Transparent disclosure of AI processing to users
 \end{itemize}
