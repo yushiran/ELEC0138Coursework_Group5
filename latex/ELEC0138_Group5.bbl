@@ -1,5 +1,13 @@
 \begin{thebibliography}{1}
 
+\bibitem{GDPR2016}
+``Eu general data protection regulation (gdpr): Regulation (eu) 2016/679 of the
+  european parliament and of the council of 27 april 2016 on the protection of
+  natural persons with regard to the processing of personal data and on the
+  free movement of such data, and repealing directive 95/46/ec (general data
+  protection regulation),'' 2016,
+\newblock OJ 2016 L 119/1.
+
 \bibitem{Devlin2019BERTPO}
 Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova,
 \newblock ``Bert: Pre-training of deep bidirectional transformers for language
