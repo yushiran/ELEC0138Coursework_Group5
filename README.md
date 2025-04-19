@@ -4,10 +4,18 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/yushiran/ELEC0138Coursework_Group5)
 ![GitHub last commit](https://img.shields.io/github/last-commit/yushiran/ELEC0138Coursework_Group5)
 
-[@yushiran](https://github.com/yushiran) [@t2m2n9](https://github.com/t2m2n9) [@yyyyzq](https://github.com/yyyyzq) [@ZHEZHEZHE020106](https://github.com/ZHEZHEZHE020106)
-
 # Abstract
 This project explores the security challenges and threat modeling of large language model (LLM) platforms. By analyzing potential vulnerabilities and implementing defensive strategies, we aim to enhance the resilience of AI-driven systems. The study includes the development of a Flask-based LLM platform, simulated attack tools for testing, and a comprehensive evaluation of security measures. Our findings provide insights into securing LLM platforms against real-world threats while maintaining usability and performance.
+
+# Table of Contents
+1. [LLM platform Flask backend](#llm-platform-flask-backend)
+      - [Features](#features)
+      - [Setup](#setup)
+      - [Usage Guide](#usage-guide)
+2. [Simulated attack tools](#simultaed-attack-tools)
+      - [Brute Force Dictionary Attack](#1-brute-force-dictionary-attack-brute_forcepy)
+      - [Multi-threaded DDoS Simulator](#2-multi-threaded-ddos-simulator-multi_ddospy)
+
 
 # LLM platform Flask backend
 ## Features
@@ -21,6 +29,12 @@ This is an AI chat platform built with Flask and the OpenAI API, offering the fo
       - GitHub OAuth integration
       - Secure password encryption
       - User session management
+      - **Multi-Factor Authentication (MFA)**: Adds an additional layer of security by requiring users to verify their identity through a secondary method, such as a one-time password (OTP) sent via email or an authenticator app.
+      - **Transport Layer Security (TLS)**: Ensures all data transmitted between the client and server is encrypted, protecting sensitive information from interception.
+      - **Rate Limiting**: Prevents abuse by limiting the number of requests a user can make within a specific time frame, mitigating brute force and DDoS attacks.
+
+      ![login inference](latex/images/login_screenshot.png)
+      ![register inference](latex/images/registration_screenshot.png)
 
 2. **Chat Functionality**
       - Support for multiple AI models (GPT-4, GPT-4o, GPT-4-Turbo, GPT-3.5-Turbo)
@@ -40,6 +54,20 @@ This is an AI chat platform built with Flask and the OpenAI API, offering the fo
       - Dark theme interface
       - File attachment display and management
 
+5. **AI-based Mechanism to Prevent Sensitive Data Pollution**
+
+      To enhance platform security, we implemented an AI-based mechanism to filter sensitive or toxic user inputs, preventing database pollution. A lightweight text classification model integrated into the Flask backend detects harmful content in real-time, issues warnings, and ensures only sanitized data is stored. This model is provided on https://huggingface.co/ZheZHEZHE020106/zt-harmful_language_detecting
+      
+
+      | Epoch | Training Loss | Accuracy | F1 Score |
+      |-------|---------------|----------|----------|
+      | 1     | 0.1827        | 0.9555   | 0.8207   |
+      | 2     | 0.0721        | 0.9600   | 0.8174   |
+      | 3     | 0.0217        | 0.9605   | 0.8192   |
+
+      ![Chat Interface](latex/images/Chat_interface_after_anti_pollution.png)
+
+                  
 ## Setup
 
 ### System Requirements
@@ -89,12 +117,6 @@ cd flask_backend
 python app.py
 ```
 
-## Technology Stack
-- **Backend**: Flask, Python  
-- **Database**: MongoDB  
-- **AI**: OpenAI API (GPT models)  
-- **Frontend**: HTML, CSS, JavaScript  
-- **Authentication**: Flask-Bcrypt, OAuth  
 
 # Simultaed attack tools
 

@@ -597,6 +597,12 @@ INPUT images/email_authentication_login_screen.png
 INPUT ./images/email_authentication_register_screen.png
 INPUT ./images/email_authentication_register_screen.png
 INPUT images/email_authentication_register_screen.png
+INPUT ./images/github_oauth_button.png
+INPUT ./images/github_oauth_button.png
+INPUT images/github_oauth_button.png
+INPUT ./images/github_oauth_page.png
+INPUT ./images/github_oauth_page.png
+INPUT images/github_oauth_page.png
 INPUT ./images/Partially_encrypted_information.png
 INPUT ./images/Partially_encrypted_information.png
 INPUT images/Partially_encrypted_information.png
@@ -606,6 +612,9 @@ INPUT images/Chat_interface_after_anti_pollution.png
 INPUT ./images/Database_information_after_anti_pollution.png
 INPUT ./images/Database_information_after_anti_pollution.png
 INPUT images/Database_information_after_anti_pollution.png
+INPUT ./images/Transparent user controls.png
+INPUT ./images/Transparent user controls.png
+INPUT images/Transparent user controls.png
 INPUT ./ELEC0138_Group5.bbl
 INPUT ELEC0138_Group5.bbl
 INPUT ./ELEC0138_Group5.bbl
