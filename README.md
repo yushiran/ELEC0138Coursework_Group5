@@ -8,8 +8,7 @@
 This project explores the security challenges and threat modeling of large language model (LLM) platforms. By analyzing potential vulnerabilities and implementing defensive strategies, we aim to enhance the resilience of AI-driven systems. The study includes the development of a Flask-based LLM platform, simulated attack tools for testing, and a comprehensive evaluation of security measures. Our findings provide insights into securing LLM platforms against real-world threats while maintaining usability and performance.
 
 For a detailed walkthrough of the project, watch the following video:
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/PLShc79Y5v8" title="Project Demonstration" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Project Demonstration](https://img.youtube.com/vi/PLShc79Y5v8/0.jpg)](https://www.youtube.com/watch?v=PLShc79Y5v8)
 
 # Table of Contents
 1. [LLM platform Flask backend](#llm-platform-flask-backend)
