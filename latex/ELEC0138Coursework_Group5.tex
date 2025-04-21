@@ -116,13 +116,14 @@ We used the STRIDE\cite{microsoft_stride} threat classification model to classif
 
 \subsection{Data Sources and attacks set-up}
 \subsubsection{Wireshark's HTTP message capture}
-We start with the registration information as an example as shown below. After registering the user information and clicking submit, we use Wireshark to add the filtered information header as shown in Figure X to the same network segment, which will show the record of all the requests submitted under that segment. 
+We start with the registration information as an example as shown below. After registering the user information and clicking submit, we use Wireshark to add the filtered information header as shown in Fig. \ref{fig:Demo Registration} to the same network segment, which will show the record of all the requests submitted under that segment. 
 So after clicking on that record we can get the relevant user information in Figure \ref{fig:Demo Registration}.
 \begin{figure}[H]
     \centering
     \begin{minipage}{0.5\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/Demo_Registration.png}
+        \label{fig:Demo Registration}
         \caption*{(a) Demo Registration}
     \end{minipage}
     \hfill
@@ -199,7 +200,7 @@ In addition, DDoS attacks are designed as decoys to cause confusion and create o
 
 
 \section{Coursework 2: Security \& Privacy Defense Strategy}
-\subsection{Security (or Privacy or both) Interaction/visualisation/actuation system}
+\subsection{Security (or Privacy or both) Interaction/ visualisation/ actuation system}
 We propose a multi-layered, defense-in-depth architecture that integrates preventive, detective, and recovery mechanisms to mitigate the threats identified in our system.
 
 For access control and authentication, we enforce Multi-Factor Authentication (MFA) using TOTP or device-based tokens and adopt a zero-trust architecture where each access request is continuously verified rather than implicitly trusted. User credentials are stored using bcrypt hashing to prevent SQL injection and accidental leaks by developers who can access the database. The rate limiting is also implemented to prevent brute-force attempts.
